@@ -1,0 +1,90 @@
+<!-- @dsCard group="Componentes" name="Cards de instalação" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic Judge — Como usar</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A227; --gold-bright: #E8C75A;
+    --bg: #0D0A14; --surface: #161021; --surface-2: #1D1530;
+    --border: #2C2240; --text: #EAE4D8; --muted: #A398B3; --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 28px; }
+  .steps { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+  .step {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 26px 22px;
+    display: flex; flex-direction: column;
+  }
+  .step-tag {
+    font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--gold-bright); margin-bottom: 10px;
+  }
+  .step h3 { font-family: 'Cinzel', serif; font-size: 1.15rem; margin-bottom: 12px; }
+  .step p { color: var(--muted); font-size: 0.92rem; margin-bottom: 14px; line-height: 1.6; }
+  .code {
+    position: relative; background: #0A0810; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px; margin-top: auto;
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 0.8rem; line-height: 1.7; color: #C8E1C0;
+    overflow-x: auto; white-space: pre;
+  }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--surface-2); color: var(--muted);
+    border: 1px solid var(--border); border-radius: 7px;
+    font-size: 0.72rem; font-weight: 600; padding: 5px 10px; cursor: pointer;
+    font-family: 'Inter', sans-serif; transition: color .2s, border-color .2s;
+  }
+  .copy-btn:hover { color: var(--gold-bright); border-color: var(--gold); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-weight: 600; font-size: 0.95rem; padding: 13px 26px;
+    border-radius: 10px; text-decoration: none; margin-top: auto;
+    background: linear-gradient(135deg, var(--gold) 0%, #A07F1A 100%);
+    color: #1A1408; box-shadow: 0 4px 18px rgba(201,162,39,0.25);
+    transition: transform .15s, box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(201,162,39,0.4); }
+  .check-list { list-style: none; color: var(--muted); font-size: 0.92rem; }
+  .check-list li { padding: 5px 0 5px 26px; position: relative; }
+  .check-list li::before { content: "✦"; position: absolute; left: 4px; color: var(--gold); }
+</style>
+</head>
+<body>
+  <div class="steps">
+    <div class="step">
+      <span class="step-tag">Passo 1</span>
+      <h3>Conecte ao seu Claude</h3>
+      <p>No app ou no site do Claude, vá em <strong>Configurações →
+      Conectores → Adicionar conector</strong> e cole o link abaixo.
+      Pronto: regras, cartas e decks direto na conversa.</p>
+      <div class="code"><button class="copy-btn">Copiar</button>[URL-DO-CONECTOR]</div>
+    </div>
+    <div class="step">
+      <span class="step-tag">Passo 2</span>
+      <h3>Instale o pacote de skills</h3>
+      <p>As skills deixam a ajuda ainda mais efetiva: método de consulta
+      às regras, sintaxe de busca de cartas e metodologia de montagem de
+      decks por bracket.</p>
+      <p style="margin-bottom:18px">Baixe o pacote e envie em
+      <strong>Configurações → Skills</strong> no Claude.</p>
+      <a class="btn" href="#">⬇️ Baixar pacote de skills</a>
+    </div>
+    <div class="step">
+      <span class="step-tag">Passo 3</span>
+      <h3>É só perguntar</h3>
+      <ul class="check-list">
+        <li>"Bloqueei com toque mortífero uma criatura com atropelar — o que acontece?"</li>
+        <li>"Quanto custa um Sol Ring? É legal em Modern?"</li>
+        <li>"Monta um Commander do Krenko, bracket 2, até 50 dólares"</li>
+        <li>"Esse deck aqui é de qual bracket?"</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

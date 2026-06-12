@@ -1,0 +1,70 @@
+<!-- @dsCard group="Componentes" name="Cards de recursos" -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic Judge — Cards de recursos</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mana-w: #F8F6D8; --mana-u: #0E68AB; --mana-b: #A69F9D;
+    --mana-r: #D3202A; --mana-g: #00733E; --gold: #C9A227;
+    --bg: #0D0A14; --surface: #161021; --border: #2C2240;
+    --text: #EAE4D8; --muted: #A398B3; --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 28px; }
+  .features { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .feature {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 26px 22px;
+    border-top: 3px solid var(--accent, var(--gold));
+    transition: transform .2s, box-shadow .2s;
+  }
+  .feature:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+  .feature .icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 16px;
+    background: color-mix(in srgb, var(--accent, var(--gold)) 14%, transparent);
+  }
+  .feature h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+  .feature p { color: var(--muted); font-size: 0.92rem; line-height: 1.6; }
+  .f-w { --accent: var(--mana-w); }
+  .f-u { --accent: var(--mana-u); }
+  .f-b { --accent: var(--mana-b); }
+  .f-r { --accent: var(--mana-r); }
+  .f-g { --accent: var(--mana-g); }
+</style>
+</head>
+<body>
+  <div class="features">
+    <div class="feature f-w">
+      <div class="icon">⚖️</div>
+      <h3>Regras com fonte oficial</h3>
+      <p>Responde citando o número da regra das Comprehensive Rules — base local sempre atualizada, nunca "de memória".</p>
+    </div>
+    <div class="feature f-u">
+      <div class="icon">🧑‍⚖️</div>
+      <h3>Veredito de juiz</h3>
+      <p>Interações complexas entre cartas resolvidas passo a passo: ordem da pilha, prioridade e estado final do jogo.</p>
+    </div>
+    <div class="feature f-r">
+      <div class="icon">🔍</div>
+      <h3>Busca de cartas ao vivo</h3>
+      <p>Nome em inglês ou português, legalidade por formato, preços e rulings oficiais — sempre atualizados.</p>
+    </div>
+    <div class="feature f-g">
+      <div class="icon">🃏</div>
+      <h3>Decks &amp; brackets</h3>
+      <p>Curva de mana, sinergias recomendadas pela comunidade, brackets do Commander (1–5) e Game Changers sempre atualizados.</p>
+    </div>
+    <div class="feature f-b">
+      <div class="icon">📚</div>
+      <h3>Para quem está começando</h3>
+      <p>Base de conhecimento em português — do guia rápido ao manual básico oficial.</p>
+    </div>
+  </div>
+</body>
+</html>
