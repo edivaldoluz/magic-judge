@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Magic Judge — seu juiz de Magic: The Gathering dentro do Claude</title>
-<meta name="description" content="O juiz de Magic: The Gathering dentro do seu Claude — dúvidas de regras com citação oficial, busca de cartas ao vivo e montagem de decks por bracket. Gratuito.">
+<title>Magic Judge — your Magic: The Gathering judge inside your AI</title>
+<meta name="description" content="The Magic: The Gathering judge inside your AI assistant — rules questions answered with official citations, live card search and bracket-aware deck building. Free and open source.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -67,7 +67,7 @@
     font-family: var(--font-display); font-weight: 700; font-size: 1.15rem;
     color: var(--text); letter-spacing: 0.04em;
   }
-  .nav-links { display: flex; gap: 22px; align-items: center; }
+  .nav-links { display: flex; gap: 18px; align-items: center; }
   .nav-links a {
     color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500;
     transition: color .2s;
@@ -78,7 +78,14 @@
     border-radius: 8px; transition: border-color .2s, color .2s;
   }
   .nav-links .gh:hover { border-color: var(--gold); color: var(--gold-bright); }
-  @media (max-width: 640px) { .nav-links a:not(.gh) { display: none; } }
+  .lang-toggle {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border); padding: 7px 12px; border-radius: 8px;
+    font-family: var(--font-body); font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: border-color .2s, color .2s;
+  }
+  .lang-toggle:hover { border-color: var(--gold); color: var(--gold-bright); }
+  @media (max-width: 700px) { .nav-links a:not(.gh) { display: none; } }
 
   /* ===== Hero ===== */
   .hero {
@@ -111,10 +118,10 @@
   }
   .tagline {
     font-size: clamp(1.05rem, 2.5vw, 1.3rem); color: var(--text);
-    font-weight: 500; max-width: 640px; margin: 0 auto 12px;
+    font-weight: 500; max-width: 680px; margin: 0 auto 12px;
   }
   .sub {
-    color: var(--muted); max-width: 600px; margin: 0 auto 36px;
+    color: var(--muted); max-width: 640px; margin: 0 auto 36px;
     font-size: 0.98rem;
   }
   .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
@@ -142,7 +149,7 @@
     font-family: var(--font-display); font-weight: 700;
     font-size: clamp(1.6rem, 4vw, 2.2rem); text-align: center; margin-bottom: 10px;
   }
-  .section-sub { text-align: center; color: var(--muted); margin-bottom: 44px; max-width: 560px; margin-left: auto; margin-right: auto; }
+  .section-sub { text-align: center; color: var(--muted); margin-bottom: 44px; max-width: 620px; margin-left: auto; margin-right: auto; }
 
   /* ===== Recursos ===== */
   .features {
@@ -185,9 +192,10 @@
     border-bottom-right-radius: 4px;
   }
   .bubble.q::before {
-    content: "Jogador pergunta"; display: block; font-size: 0.72rem; font-weight: 700;
+    content: "A player asks"; display: block; font-size: 0.72rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.08em; color: var(--mana-u); margin-bottom: 8px;
   }
+  body[data-lang="pt"] .bubble.q::before { content: "Jogador pergunta"; }
   .bubble.a {
     background: linear-gradient(160deg, rgba(201,162,39,0.10), rgba(201,162,39,0.03));
     border: 1px solid rgba(201,162,39,0.35);
@@ -195,16 +203,15 @@
     border-bottom-left-radius: 4px;
   }
   .bubble.a::before {
-    content: "⚖️ Magic Judge responde"; display: block; font-size: 0.72rem; font-weight: 700;
+    content: "⚖️ Magic Judge answers"; display: block; font-size: 0.72rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold-bright); margin-bottom: 8px;
   }
+  body[data-lang="pt"] .bubble.a::before { content: "⚖️ Magic Judge responde"; }
   .bubble .rule { color: var(--gold-bright); font-weight: 600; white-space: nowrap; }
 
   /* ===== Como usar ===== */
-  .steps {
-    display: grid; gap: 18px;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  }
+  .steps { display: grid; gap: 18px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .steps { grid-template-columns: repeat(2, 1fr); } }
   .step {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 26px 22px;
@@ -216,21 +223,14 @@
   }
   .step h3 { font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 12px; }
   .step p { color: var(--muted); font-size: 0.92rem; margin-bottom: 14px; }
-  .soon {
-    display: inline-block; font-size: 0.7rem; font-weight: 700;
-    background: rgba(14,104,171,0.18); color: #6FB6E8;
-    border: 1px solid rgba(14,104,171,0.45);
-    padding: 3px 10px; border-radius: 999px; text-transform: uppercase;
-    letter-spacing: 0.06em; margin-left: 8px; vertical-align: middle;
-  }
+  .step .note { font-size: 0.82rem; margin-top: 12px; margin-bottom: 0; }
   .code {
     position: relative; background: #0A0810; border: 1px solid var(--border);
     border-radius: 10px; padding: 16px; margin-top: auto;
     font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-    font-size: 0.8rem; line-height: 1.7; color: #C8E1C0;
+    font-size: 0.78rem; line-height: 1.7; color: #C8E1C0;
     overflow-x: auto; white-space: pre;
   }
-  .code .cmt { color: #6B5F80; }
   .copy-btn {
     position: absolute; top: 8px; right: 8px;
     background: var(--surface-2); color: var(--muted);
@@ -293,14 +293,14 @@
   .mana-dots span { width: 10px; height: 10px; border-radius: 50%; }
 </style>
 </head>
-<body>
+<body data-lang="en">
 
 <div class="mana-line"></div>
 
 <header>
   <nav class="nav">
     <a class="brand" href="#">
-      <svg viewBox="0 0 64 64" aria-label="Emblema do Magic Judge">
+      <svg viewBox="0 0 64 64" aria-label="Magic Judge emblem">
         <circle cx="32" cy="32" r="27" fill="none" stroke="var(--mana-w)" stroke-width="5" stroke-linecap="round" stroke-dasharray="26 143.6" transform="rotate(-90 32 32)"/>
         <circle cx="32" cy="32" r="27" fill="none" stroke="var(--mana-u)" stroke-width="5" stroke-linecap="round" stroke-dasharray="26 143.6" transform="rotate(-18 32 32)"/>
         <circle cx="32" cy="32" r="27" fill="none" stroke="var(--mana-b)" stroke-width="5" stroke-linecap="round" stroke-dasharray="26 143.6" transform="rotate(54 32 32)"/>
@@ -320,19 +320,20 @@
       <span class="brand-name">Magic Judge</span>
     </a>
     <div class="nav-links">
-      <a href="#recursos">Recursos</a>
-      <a href="#demo">Veja funcionando</a>
-      <a href="#como-usar">Como usar</a>
-      <a href="#apoie">Apoie</a>
+      <a href="#features" data-i18n="nav_features">Features</a>
+      <a href="#demo" data-i18n="nav_demo">See it in action</a>
+      <a href="#how" data-i18n="nav_how">How to use</a>
+      <a href="#support" data-i18n="nav_support">Support</a>
       <a href="https://github.com/edivaldoluz/magic-judge" target="_blank" rel="noopener">GitHub ↗</a>
-      <a class="gh" href="#como-usar">🔌 Conectar</a>
+      <a class="gh" href="#how" data-i18n="nav_connect">🔌 Connect</a>
+      <button class="lang-toggle" id="lang-toggle" aria-label="Switch language">🌐 PT-BR</button>
     </div>
   </nav>
   <div class="mana-line" style="height:2px"></div>
 </header>
 
 <section class="hero">
-  <span class="badge">Assistente para o app do Claude · Gratuito e de código aberto</span>
+  <span class="badge" data-i18n="badge">Free &amp; open source · Works with your favorite AI app</span>
   <svg class="emblem" viewBox="0 0 64 64" aria-hidden="true">
     <circle cx="32" cy="32" r="27" fill="none" stroke="var(--mana-w)" stroke-width="5" stroke-linecap="round" stroke-dasharray="26 143.6" transform="rotate(-90 32 32)"/>
     <circle cx="32" cy="32" r="27" fill="none" stroke="var(--mana-u)" stroke-width="5" stroke-linecap="round" stroke-dasharray="26 143.6" transform="rotate(-18 32 32)"/>
@@ -351,50 +352,51 @@
     </g>
   </svg>
   <h1>Magic Judge</h1>
-  <p class="tagline">O juiz de Magic: The Gathering que mora dentro do seu Claude.</p>
-  <p class="sub">Dúvidas de regras respondidas com a regra oficial citada, vereditos passo a passo,
-  busca de cartas ao vivo e montagem de decks por bracket — tudo em português.</p>
+  <p class="tagline" data-i18n="tagline">The Magic: The Gathering judge that lives inside your AI assistant.</p>
+  <p class="sub" data-i18n="sub">Rules questions answered with the official rule cited, step-by-step verdicts,
+  live card search and bracket-aware deck building — in Claude, ChatGPT, Cursor or any app that speaks MCP.</p>
   <div class="cta-row">
-    <a class="btn btn-primary" href="#como-usar">🔌 Adicionar ao Claude</a>
-    <a class="btn btn-ghost" href="#como-usar">⬇️ Baixar pacote de skills</a>
+    <a class="btn btn-primary" href="#how" data-i18n="cta_connect">🔌 Connect to your AI</a>
+    <a class="btn btn-ghost" href="#how" data-i18n="cta_skills">⬇️ Download skills pack</a>
   </div>
 </section>
 
 <div class="mana-line"></div>
 
-<section id="recursos">
+<section id="features">
   <div class="wrap">
-    <h2 class="section-title">O que ele faz</h2>
-    <p class="section-sub">Cinco habilidades, uma para cada cor de mana.</p>
+    <h2 class="section-title" data-i18n="feat_title">What it does</h2>
+    <p class="section-sub" data-i18n="feat_sub">Five abilities, one for each color of mana.</p>
     <div class="features">
       <div class="feature f-w">
         <div class="icon">⚖️</div>
-        <h3>Regras com fonte oficial</h3>
-        <p>Responde citando o número da regra das Comprehensive Rules — base local sempre
-        atualizada, nunca "de memória".</p>
+        <h3 data-i18n="f1t">Rules with official sources</h3>
+        <p data-i18n="f1p">Answers cite the rule number straight from the Comprehensive Rules — an always
+        up-to-date local source, never "from memory".</p>
       </div>
       <div class="feature f-u">
         <div class="icon">🧑‍⚖️</div>
-        <h3>Veredito de juiz</h3>
-        <p>Interações complexas entre cartas resolvidas passo a passo: ordem da pilha,
-        prioridade e estado final do jogo.</p>
+        <h3 data-i18n="f2t">Judge's verdict</h3>
+        <p data-i18n="f2p">Complex card interactions resolved step by step: stack order, priority and
+        the final game state.</p>
       </div>
       <div class="feature f-r">
         <div class="icon">🔍</div>
-        <h3>Busca de cartas ao vivo</h3>
-        <p>Nome em inglês ou português, legalidade por formato, preços e
-        rulings oficiais — sempre atualizados.</p>
+        <h3 data-i18n="f3t">Live card search</h3>
+        <p data-i18n="f3p">Names in English or Portuguese, format legality, prices and official
+        rulings — always current.</p>
       </div>
       <div class="feature f-g">
         <div class="icon">🃏</div>
-        <h3>Decks &amp; brackets</h3>
-        <p>Curva de mana, sinergias recomendadas pela comunidade, brackets do
-        Commander (1–5) e Game Changers sempre atualizados.</p>
+        <h3 data-i18n="f4t">Decks &amp; brackets</h3>
+        <p data-i18n="f4p">Mana curve, community-recommended synergies, Commander brackets (1–5) and
+        up-to-date Game Changers.</p>
       </div>
       <div class="feature f-b">
         <div class="icon">📚</div>
-        <h3>Para quem está começando</h3>
-        <p>Base de conhecimento em português — do guia rápido ao manual básico oficial.</p>
+        <h3 data-i18n="f5t">For new players</h3>
+        <p data-i18n="f5p">A beginner-friendly knowledge base — from a quick-start guide to the
+        official basic rulebook.</p>
       </div>
     </div>
   </div>
@@ -402,78 +404,85 @@
 
 <section class="demo" id="demo">
   <div class="wrap">
-    <h2 class="section-title">Veja funcionando</h2>
-    <p class="section-sub">Pergunta real, resposta real — com as regras citadas.</p>
+    <h2 class="section-title" data-i18n="demo_title">See it in action</h2>
+    <p class="section-sub" data-i18n="demo_sub">Real question, real answer — with the rules cited.</p>
     <div class="chat">
-      <div class="bubble q">
-        Bloqueei um Colossal Dreadmaw (6/6, atropelar) com um Typhoid Rats
-        (1/1, toque mortífero). O que acontece?
+      <div class="bubble q" data-i18n="demo_q">
+        I blocked a Colossal Dreadmaw (6/6, trample) with a Typhoid Rats
+        (1/1, deathtouch). What happens?
       </div>
-      <div class="bubble a">
-        <strong>Veredito: o oponente leva 5 de dano e as duas criaturas morrem.</strong><br><br>
-        O Dreadmaw só precisa atribuir 1 de dano letal ao bloqueador
-        (<span class="rule">regra 702.19, Trample</span>) — os 5 restantes atropelam.
-        O Rats destrói o Dreadmaw com 1 de dano de toque mortífero
-        (<span class="rule">regras 702.2b e 704.5h</span>).
+      <div class="bubble a" data-i18n="demo_a">
+        <strong>Verdict: the opponent takes 5 damage and both creatures die.</strong><br><br>
+        The Dreadmaw only needs to assign 1 point of lethal damage to its blocker
+        (<span class="rule">rule 702.19, Trample</span>) — the other 5 trample through.
+        The Rats destroys the Dreadmaw with 1 point of deathtouch damage
+        (<span class="rule">rules 702.2b and 704.5h</span>).
       </div>
     </div>
   </div>
 </section>
 
-<section id="como-usar">
+<section id="how">
   <div class="wrap">
-    <h2 class="section-title">Como usar</h2>
-    <p class="section-sub">Dois passos e o juiz está na mesa — gratuito, funciona com qualquer conta do Claude, no celular ou no PC.</p>
+    <h2 class="section-title" data-i18n="how_title">How to use</h2>
+    <p class="section-sub" data-i18n="how_sub">Magic Judge speaks MCP — the open standard that plugs new
+    abilities into AI assistants. Pick your app, paste one link, done.</p>
     <div class="steps">
       <div class="step">
-        <span class="step-tag">Passo 1</span>
-        <h3>Conecte ao seu Claude</h3>
-        <p>No app ou no site do Claude, vá em <strong>Configurações →
-        Conectores → Adicionar conector</strong> e cole o link abaixo.
-        Pronto: regras, cartas e decks direto na conversa.</p>
-        <div class="code"><button class="copy-btn" data-copy="[URL-DO-CONECTOR]">Copiar</button>[URL-DO-CONECTOR]</div>
+        <span class="step-tag" data-i18n="s1tag">Step 1 · Claude app</span>
+        <h3 data-i18n="s1t">Add the connector</h3>
+        <p data-i18n="s1p">In the Claude app or website, go to <strong>Settings → Connectors →
+        Add connector</strong> and paste this link:</p>
+        <div class="code"><button class="copy-btn" data-copy="https://mcp.magicjudge.app/mcp" data-i18n="copy">Copy</button>https://mcp.magicjudge.app/mcp</div>
       </div>
       <div class="step">
-        <span class="step-tag">Passo 2</span>
-        <h3>Instale o pacote de skills</h3>
-        <p>As skills deixam a ajuda ainda mais efetiva: método de consulta
-        às regras, sintaxe de busca de cartas e metodologia de montagem de
-        decks por bracket.</p>
-        <p style="margin-bottom:18px">Baixe o pacote e envie em
-        <strong>Configurações → Skills</strong> no Claude.</p>
-        <a class="btn btn-primary" href="[LINK-SKILLS]" style="margin-top:auto; justify-content:center">⬇️ Baixar pacote de skills</a>
+        <span class="step-tag" data-i18n="s2tag">Step 1 · Terminal</span>
+        <h3 data-i18n="s2t">Claude Code &amp; dev tools</h3>
+        <p data-i18n="s2p">One command in your terminal:</p>
+        <div class="code"><button class="copy-btn" data-copy="claude mcp add --transport http magic-judge https://mcp.magicjudge.app/mcp" data-i18n="copy">Copy</button>claude mcp add --transport http magic-judge \
+  https://mcp.magicjudge.app/mcp</div>
+        <p class="note" data-i18n="s2note">The same endpoint works in Cursor, VS Code and any other MCP client.</p>
       </div>
       <div class="step">
-        <span class="step-tag">Passo 3</span>
-        <h3>É só perguntar</h3>
+        <span class="step-tag" data-i18n="s3tag">Step 2 · Optional</span>
+        <h3 data-i18n="s3t">Install the skills pack</h3>
+        <p data-i18n="s3p1">Skills make the judge even sharper in Claude: rules lookup method,
+        card search syntax and bracket-aware deck building.</p>
+        <p data-i18n="s3p2">Download the pack and upload it under <strong>Settings → Skills</strong>.</p>
+        <a class="btn btn-primary" href="[LINK-SKILLS]" style="margin-top:auto; justify-content:center" data-i18n="s3btn">⬇️ Download skills pack</a>
+      </div>
+      <div class="step">
+        <span class="step-tag" data-i18n="s4tag">Step 3</span>
+        <h3 data-i18n="s4t">Just ask</h3>
         <ul class="check-list">
-          <li>"Bloqueei com toque mortífero uma criatura com atropelar — o que acontece?"</li>
-          <li>"Quanto custa um Sol Ring? É legal em Modern?"</li>
-          <li>"Monta um Commander do Krenko, bracket 2, até 50 dólares"</li>
-          <li>"Esse deck aqui é de qual bracket?"</li>
+          <li data-i18n="ask1">"I blocked a trampler with a deathtouch blocker — what happens?"</li>
+          <li data-i18n="ask2">"How much is a Sol Ring? Is it legal in Modern?"</li>
+          <li data-i18n="ask3">"Build a Krenko Commander deck, bracket 2, under $50"</li>
+          <li data-i18n="ask4">"Which bracket is this deck?"</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<section class="support" id="apoie">
+<section class="support" id="support">
   <div class="wrap">
-    <h2 class="section-title">Apoie o projeto</h2>
-    <p class="section-sub">Doações mantêm o servidor no ar e a base de regras atualizada a cada coleção.</p>
+    <h2 class="section-title" data-i18n="sup_title">Support the project</h2>
+    <p class="section-sub" data-i18n="sup_sub">Donations keep the server running and the rules database
+    updated with every new set.</p>
     <div class="support-grid">
       <div class="support-card">
-        <h3>💚 PIX</h3>
-        <p>Qualquer valor ajuda a manter o juiz de plantão.</p>
+        <h3 data-i18n="pix_t">💚 PIX (Brazil)</h3>
+        <p data-i18n="pix_p">Every bit helps keep the judge on call.</p>
         <div class="pix-box">
           <span id="pix-key">[CHAVE-PIX]</span>
-          <button data-copy="[CHAVE-PIX]">Copiar</button>
+          <button data-copy="[CHAVE-PIX]" data-i18n="copy">Copy</button>
         </div>
       </div>
       <div class="support-card">
-        <h3>🌍 Doação internacional</h3>
-        <p>Prefere apoiar por fora do Brasil? (Ko-fi, PayPal...)</p>
-        <a class="btn btn-ghost" href="#" style="font-size:0.85rem; padding:10px 20px">[LINK-DE-DOAÇÃO]</a>
+        <h3 data-i18n="intl_t">🌍 International donation</h3>
+        <p data-i18n="intl_p">Prefer to support from abroad? (Ko-fi, PayPal...)</p>
+        <a class="btn btn-ghost" href="#" style="font-size:0.85rem; padding:10px 20px" data-i18n="intl_btn">[DONATION-LINK]</a>
       </div>
     </div>
   </div>
@@ -481,19 +490,19 @@
 
 <section id="roadmap">
   <div class="wrap">
-    <h2 class="section-title">Roadmap público</h2>
-    <p class="section-sub">Sugestões e melhorias são bem-vindas.</p>
+    <h2 class="section-title" data-i18n="road_title">Public roadmap</h2>
+    <p class="section-sub" data-i18n="road_sub">Requests, suggestions and improvements are welcome.</p>
     <ul class="roadmap">
-      <li class="done"><span class="st">✅</span> Juiz de regras com citação oficial</li>
-      <li class="done"><span class="st">✅</span> Busca de cartas e análise de decks</li>
-      <li class="done"><span class="st">✅</span> Brackets do Commander + recomendações da comunidade</li>
-      <li><span class="st">🔜</span> Conexão com o app do Claude (link público)</li>
-      <li><span class="st">🔜</span> Pacote de skills para download</li>
-      <li><span class="st">💡</span> Em estudo: bot de Telegram</li>
+      <li class="done"><span class="st">✅</span> <span data-i18n="road1">Rules judge with official citations</span></li>
+      <li class="done"><span class="st">✅</span> <span data-i18n="road2">Card search and deck analysis</span></li>
+      <li class="done"><span class="st">✅</span> <span data-i18n="road3">Commander brackets + community picks</span></li>
+      <li><span class="st">🔜</span> <span data-i18n="road4">Public MCP connector link</span></li>
+      <li><span class="st">🔜</span> <span data-i18n="road5">Downloadable skills pack</span></li>
+      <li><span class="st">💡</span> <span data-i18n="road6">Exploring: Telegram bot</span></li>
     </ul>
-    <p class="contact">
-      Solicitações, sugestões e melhorias:
-      <a href="https://github.com/edivaldoluz/magic-judge/issues" target="_blank" rel="noopener">abra uma issue no GitHub</a>
+    <p class="contact" data-i18n="contact">
+      Requests, suggestions and improvements:
+      <a href="https://github.com/edivaldoluz/magic-judge/issues" target="_blank" rel="noopener">open an issue on GitHub</a>
     </p>
   </div>
 </section>
@@ -506,25 +515,64 @@
     <span style="background:var(--mana-r)"></span>
     <span style="background:var(--mana-g)"></span>
   </div>
-  Projeto de código aberto — <a href="https://github.com/edivaldoluz/magic-judge" target="_blank" rel="noopener">github.com/edivaldoluz/magic-judge</a><br>
-  Magic Judge é conteúdo de fã não-oficial, sob a
+  <p data-i18n="foot_os">Open source project — <a href="https://github.com/edivaldoluz/magic-judge" target="_blank" rel="noopener">github.com/edivaldoluz/magic-judge</a></p>
+  <p data-i18n="foot_legal">Magic Judge is unofficial Fan Content permitted under the
   <a href="https://company.wizards.com/en/legal/fancontentpolicy" target="_blank" rel="noopener">Fan Content Policy</a>
-  da Wizards of the Coast.<br>
-  Magic: The Gathering © Wizards of the Coast. Dados de cartas por
+  of Wizards of the Coast. Magic: The Gathering © Wizards of the Coast. Card data by
   <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a>.
-  Recomendações de decks por <a href="https://edhrec.com" target="_blank" rel="noopener">EDHREC</a>.
+  Deck recommendations by <a href="https://edhrec.com" target="_blank" rel="noopener">EDHREC</a>.</p>
 </footer>
 
 <script>
-  document.querySelectorAll('[data-copy]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      navigator.clipboard.writeText(btn.getAttribute('data-copy')).then(function () {
-        var original = btn.textContent;
-        btn.textContent = 'Copiado!';
-        setTimeout(function () { btn.textContent = original; }, 1600);
-      });
+(function () {
+  var cache = {};
+  var current = 'en';
+  var toggle = document.getElementById('lang-toggle');
+
+  function fileFor(lang) { return lang === 'pt' ? 'i18n/pt-BR.json' : 'i18n/en.json'; }
+
+  function apply(dict, lang) {
+    current = lang;
+    document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+    document.body.dataset.lang = lang;
+    document.title = dict._title;
+    var meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute('content', dict._desc);
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+    toggle.textContent = lang === 'pt' ? '🌐 EN' : '🌐 PT-BR';
+    try { localStorage.setItem('mj-lang', lang); } catch (e) {}
+  }
+
+  function setLang(lang) {
+    if (cache[lang]) { apply(cache[lang], lang); return; }
+    fetch(fileFor(lang))
+      .then(function (r) { return r.json(); })
+      .then(function (dict) { cache[lang] = dict; apply(dict, lang); })
+      .catch(function () { /* offline/file:// — keeps static English */ });
+  }
+
+  toggle.addEventListener('click', function () {
+    setLang(current === 'pt' ? 'en' : 'pt');
+  });
+
+  document.addEventListener('click', function (ev) {
+    var btn = ev.target.closest('[data-copy]');
+    if (!btn) return;
+    navigator.clipboard.writeText(btn.getAttribute('data-copy')).then(function () {
+      var dict = cache[current] || {};
+      var original = btn.textContent;
+      btn.textContent = dict.copied || 'Copied!';
+      setTimeout(function () { btn.textContent = original; }, 1600);
     });
   });
+
+  var saved = 'en';
+  try { saved = localStorage.getItem('mj-lang') || 'en'; } catch (e) {}
+  setLang(saved);
+})();
 </script>
 
 </body>
