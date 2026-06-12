@@ -1,0 +1,10 @@
+{
+  "name": "magic-judge",
+  "description": "Agente de Magic: The Gathering — tira dúvidas de regras citando as regras oficiais, busca cartas na Scryfall e ajuda a montar e analisar decks.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Edivaldo Luz",
+    "email": "edivaldo.luz@webglobal.com.br"
+  },
+  "keywords": ["magic", "mtg", "regras", "scryfall", "deck"]
+}
