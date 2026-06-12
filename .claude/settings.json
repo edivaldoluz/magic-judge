@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "edi-magic": {
+      "source": {
+        "source": "github",
+        "repo": "edivaldoluz/magic-judge"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "magic-judge@edi-magic": true
+  }
+}

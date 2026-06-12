@@ -11,16 +11,20 @@ assistente completo de **Magic: The Gathering**:
 ## Instalação (qualquer máquina com Claude Code)
 
 ```bash
-git clone <URL-DESTE-REPOSITORIO> magic-judge
+git clone https://github.com/edivaldoluz/magic-judge.git
 claude
 ```
 
 Dentro do Claude Code:
 
 ```
-/plugin marketplace add ./magic-judge
+/plugin marketplace add edivaldoluz/magic-judge
 /plugin install magic-judge@edi-magic
 ```
+
+(Quem abrir o Claude Code dentro da pasta clonada já recebe o plugin
+automaticamente via `.claude/settings.json` — inclusive em sessões na nuvem
+pela aba Code do app.)
 
 Pronto. Funciona em Windows, Mac e Linux — só precisa do Claude Code logado.
 
