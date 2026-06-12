@@ -60,14 +60,54 @@ ou analisar qualquer deck de Commander. Pontos inegociáveis:
 - Ao **analisar** um deck existente, classifique o bracket dele no menor
   nível cujos critérios cumpre.
 
+## EDHREC — recomendações por comandante (Commander)
+
+O EDHREC agrega dezenas de milhares de decklists reais. Use-o como ponto de
+partida para descobrir as cartas mais jogadas e mais sinérgicas com um
+comandante. Endpoints JSON (sem autenticação):
+
+```bash
+# Página do comandante (slug: nome em minúsculas, sem pontuação, espaços viram hífens)
+# Ex.: "Krenko, Mob Boss" -> krenko-mob-boss
+curl -s "https://json.edhrec.com/pages/commanders/krenko-mob-boss.json" \
+  -H "User-Agent: magic-judge-plugin/1.0"
+
+# Variante econômica do mesmo comandante
+curl -s "https://json.edhrec.com/pages/commanders/krenko-mob-boss/budget.json" ...
+
+# Deck médio (lista média agregada)
+curl -s "https://json.edhrec.com/pages/average-decks/krenko-mob-boss.json" ...
+```
+
+Campos úteis na resposta:
+- Raiz: `avg_price`, contagens por tipo (`creature`, `land`...), `similar`
+  (comandantes parecidos), `num_decks_avg` (popularidade)
+- `container.json_dict.cardlists[]` — listas por categoria, cada uma com
+  `header` ("High Synergy Cards", "Top Cards", "Game Changers", "Creatures",
+  "Instants"...) e `cardviews[]` contendo:
+  - `name` — nome da carta
+  - `synergy` — taxa de sinergia com ESTE comandante (0.30 = aparece 30 p.p.
+    mais em decks dele do que na média geral; é o melhor sinal de sinergia)
+  - `num_decks` / `potential_decks` — em quantos decks aparece
+
+Como usar bem:
+- **High Synergy Cards** = identidade do deck; **Top Cards** = staples do
+  comandante. Combine os dois com o tema pedido pelo usuário.
+- EDHREC indica POPULARIDADE, não adequação ao bracket/orçamento — valide
+  cada carta na Scryfall (legalidade, `is:gamechanger`, preço) antes de
+  incluir.
+- É API não-oficial da comunidade: se o endpoint falhar, siga só com a
+  Scryfall (`order=edhrec` na busca já ordena por popularidade).
+
 ## Fluxo de trabalho
 
 1. **Valide a legalidade** de cada carta sugerida na Scryfall
    (`f:<formato>` na busca, ou campo `legalities` da carta) — nunca confie
    na memória, banlists mudam. Em Commander, valide também a identidade
    de cor com `id<=<cores do comandante>`.
-2. **Use a Scryfall para descobrir cartas** (skill `busca-cartas`):
-   `order=edhrec` ordena por popularidade — bom ponto de partida para staples.
+2. **Descubra cartas candidatas**: em Commander, comece pelo EDHREC (seção
+   acima — High Synergy + Top Cards do comandante); nos demais formatos (ou
+   se o EDHREC falhar), use a Scryfall com `order=edhrec` para staples.
 3. **Orçamento:** filtre com `usd<=X` na busca. Avise que preços são em USD
    (referência) e variam no Brasil.
 4. **Cheque a curva de mana** ao final: conte cartas por valor de mana e

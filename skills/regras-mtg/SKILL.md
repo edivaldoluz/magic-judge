@@ -38,17 +38,32 @@ As regras são numeradas por seção — use isso para direcionar a busca:
 - **9xx** — Variantes casuais (903 = Commander)
 - **Glossário** — no final do arquivo, ordem alfabética
 
-## Como buscar
+## Como buscar — da dúvida à regra
 
-1. A Comprehensive Rules está em **inglês** — traduza o termo da pergunta antes
-   de buscar (tabela abaixo).
-2. Use Grep no arquivo com o termo em inglês ou o número da regra:
-   - Palavra-chave de habilidade: `Grep "702\.\d+\. NomeDaHabilidade"` ou apenas o nome
-   - Regra específica: `Grep "^603\.6"` (com contexto -A 5)
-3. Leia a regra completa e as sub-regras (601.2a, 601.2b...) — a resposta
-   geralmente está nos detalhes das sub-regras.
-4. Para perguntas de iniciante, complemente com os manuais em português
-   (explicação didática) mas a autoridade é sempre a Comprehensive Rules.
+O usuário **nunca** vai informar número de regra — ele pergunta em linguagem
+natural ("posso responder com contramágica depois que ele pagou o mana?").
+**Identificar a regra certa é trabalho seu.** Fluxo:
+
+1. **Extraia os conceitos da dúvida.** Que mecânicas estão envolvidas?
+   (ex: "bloqueei com deathtouch e ele tem trample" → dano de combate,
+   dano letal, atribuição de dano, deathtouch, trample)
+2. **Traduza os conceitos para inglês** (tabela abaixo) — a Comprehensive
+   Rules é em inglês.
+3. **Localize a seção pela estrutura** (mapa acima): palavra-chave de
+   habilidade → 702; combate → 5xx; conjurar/responder → 601/117;
+   "morreu/destruído quando" → 704. Em dúvida, comece pelo **Glossário**
+   no fim do arquivo, que aponta o número da regra de cada termo.
+4. **Faça Grep com mais de um termo candidato** e contexto (-A 5 ou mais):
+   `deathtouch`, `lethal damage`, `assign.*damage`. Se um termo não achar
+   nada útil, reformule — sinônimos, forma verbal diferente, termo do
+   glossário.
+5. **Leia a regra completa e TODAS as sub-regras** (702.2a, 702.2b...) —
+   a resposta quase sempre está no detalhe de uma sub-regra.
+6. **Se a dúvida envolve carta específica**, busque o oracle text e os
+   rulings dela na Scryfall (skill `busca-cartas`) — a interação pode
+   depender do texto exato da carta.
+7. Para perguntas de iniciante, complemente com os manuais em português
+   (explicação didática), mas a autoridade é sempre a Comprehensive Rules.
 
 ## Glossário PT-BR → EN (termos mais comuns)
 
