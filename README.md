@@ -49,11 +49,14 @@ magic-judge/
 │   ├── regras-mtg/          # como buscar e citar regras oficiais
 │   ├── busca-cartas/        # API Scryfall e sintaxe de busca
 │   └── montar-deck/         # metodologia de deckbuilding
-└── conhecimento/
-    ├── comprehensive-rules.txt   # regras oficiais completas (EN)
-    ├── commander-brackets.md     # brackets 1-5 do Commander + Game Changers
-    ├── manual-basico-ptbr.txt    # manual básico oficial (PT-BR)
-    └── guia-rapido-ptbr.txt      # guia rápido para iniciantes (PT-BR)
+├── conhecimento/
+│   ├── comprehensive-rules.txt   # regras oficiais completas (EN)
+│   ├── commander-brackets.md     # brackets 1-5 do Commander + Game Changers
+│   ├── manual-basico-ptbr.txt    # manual básico oficial (PT-BR)
+│   └── guia-rapido-ptbr.txt      # guia rápido para iniciantes (PT-BR)
+├── mcp-server/                   # servidor MCP em NestJS (conector p/ app do Claude)
+├── claude-ai-project/            # kit para criar o Project no claude.ai (mobile)
+└── docs/                         # prompt da landing page e materiais
 ```
 
 ## Atualizando as regras
