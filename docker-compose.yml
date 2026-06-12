@@ -1,0 +1,10 @@
+services:
+  mcp-magic:
+    build:
+      context: .
+      dockerfile: mcp-server/Dockerfile
+    restart: unless-stopped
+    environment:
+      - PORT=3333
+    expose:
+      - "3333"

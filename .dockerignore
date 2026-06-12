@@ -1,0 +1,16 @@
+.git
+.github
+.claude
+.claude-plugin
+.DS_Store
+**/node_modules
+**/dist
+docs
+design
+skills
+agents
+claude-ai-project
+conhecimento/manual-basico-ptbr.txt
+conhecimento/guia-rapido-ptbr.txt
+README.md
+mcp-server/README.md
