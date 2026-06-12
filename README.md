@@ -15,11 +15,11 @@ conectores para IAs. Funciona no Claude, ChatGPT, Cursor, VS Code e qualquer
 cliente compatível. Não precisa instalar nada: é só conectar.
 
 1. **No seu app de IA:** adicione um conector apontando para
-   `https://mcp.magicjudge.app/mcp` *(link provisório — divulgação em breve no site)*
+   `https://mcp-magic.tcgagents.com/mcp` *(link provisório — divulgação em breve no site)*
    — ex.: Claude → Configurações → Conectores → Adicionar conector.
 2. **No terminal:**
    ```bash
-   claude mcp add --transport http magic-judge https://mcp.magicjudge.app/mcp
+   claude mcp add --transport http magic-judge https://mcp-magic.tcgagents.com/mcp
    ```
 3. **Pacote de skills (opcional, para o Claude):** baixe no
    [site](https://edivaldoluz.github.io/magic-judge/) e envie em

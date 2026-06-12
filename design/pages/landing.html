@@ -18,10 +18,12 @@
     --mana-g: #00733E;
     --gold: #C9A227;
     --gold-bright: #E8C75A;
-    --bg: #0D0A14;
-    --surface: #161021;
-    --surface-2: #1D1530;
-    --border: #2C2240;
+    --arcane: #B14FC4;
+    --arcane-bright: #D98BE8;
+    --bg: #0B0712;
+    --surface: #181024;
+    --surface-2: #221735;
+    --border: #3A2C50;
     --text: #EAE4D8;
     --muted: #A398B3;
     --radius: 14px;
@@ -39,6 +41,36 @@
     -webkit-font-smoothing: antialiased;
   }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* ===== Fundo arcano (névoa roxa + brasas) ===== */
+  .bg-arcane {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(ellipse 55% 42% at 50% 6%, rgba(177,79,196,0.16), transparent 65%),
+      radial-gradient(ellipse 38% 32% at 10% 34%, rgba(123,45,139,0.17), transparent 70%),
+      radial-gradient(ellipse 38% 32% at 90% 28%, rgba(98,44,160,0.15), transparent 70%),
+      radial-gradient(ellipse 45% 30% at 75% 70%, rgba(123,45,139,0.10), transparent 70%),
+      radial-gradient(ellipse 65% 32% at 50% 102%, rgba(211,85,31,0.13), transparent 72%);
+  }
+  .bg-embers {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.55;
+    background-image:
+      radial-gradient(2px 2px at 12% 88%, rgba(255,150,70,0.8), transparent 100%),
+      radial-gradient(1.5px 1.5px at 28% 72%, rgba(255,120,50,0.6), transparent 100%),
+      radial-gradient(2px 2px at 46% 92%, rgba(255,170,90,0.7), transparent 100%),
+      radial-gradient(1.5px 1.5px at 64% 78%, rgba(216,139,232,0.6), transparent 100%),
+      radial-gradient(2px 2px at 81% 86%, rgba(255,140,60,0.7), transparent 100%),
+      radial-gradient(1.5px 1.5px at 93% 70%, rgba(177,79,196,0.55), transparent 100%),
+      radial-gradient(1.5px 1.5px at 38% 60%, rgba(216,139,232,0.4), transparent 100%),
+      radial-gradient(2px 2px at 70% 55%, rgba(255,150,70,0.35), transparent 100%);
+    animation: embers 26s linear infinite;
+  }
+  @keyframes embers {
+    0%   { transform: translateY(0); opacity: 0.55; }
+    50%  { opacity: 0.3; }
+    100% { transform: translateY(-45vh); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bg-embers { animation: none; } }
 
   /* ===== Linha das 5 cores de mana ===== */
   .mana-line {
@@ -96,9 +128,9 @@
   .hero::before {
     content: ""; position: absolute; inset: 0; pointer-events: none;
     background:
-      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,162,39,0.10), transparent 70%),
-      radial-gradient(ellipse 40% 35% at 15% 80%, rgba(14,104,171,0.08), transparent 70%),
-      radial-gradient(ellipse 40% 35% at 85% 80%, rgba(0,115,62,0.08), transparent 70%);
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(177,79,196,0.14), transparent 70%),
+      radial-gradient(ellipse 40% 35% at 15% 80%, rgba(123,45,139,0.12), transparent 70%),
+      radial-gradient(ellipse 40% 35% at 85% 80%, rgba(211,85,31,0.08), transparent 70%);
   }
   .hero > * { position: relative; }
   .badge {
@@ -116,6 +148,7 @@
     background: linear-gradient(180deg, #F5EEDC 30%, var(--gold) 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
     margin-bottom: 18px;
+    filter: drop-shadow(0 0 22px rgba(177,79,196,0.35));
   }
   .tagline {
     font-size: clamp(1.05rem, 2.5vw, 1.3rem); color: var(--text);
@@ -147,7 +180,7 @@
     background: transparent; color: var(--text);
     border: 1px solid var(--border);
   }
-  .btn-ghost:hover { border-color: var(--gold); color: var(--gold-bright); }
+  .btn-ghost:hover { border-color: var(--arcane); color: var(--arcane-bright); }
 
   /* ===== Seções ===== */
   section { padding: 72px 0; }
@@ -163,23 +196,54 @@
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
   .feature {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 26px 22px;
-    border-top: 3px solid var(--accent, var(--gold));
-    transition: transform .2s, border-color .2s, box-shadow .2s;
+    background: #0E0A16; border: 1px solid #050308;
+    border-radius: 16px; padding: 9px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.5);
+    transition: transform .2s, box-shadow .2s;
   }
   .feature:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    transform: translateY(-5px) rotate(-0.4deg);
+    box-shadow: 0 16px 38px rgba(0,0,0,0.6),
+      0 0 26px color-mix(in srgb, var(--accent, var(--gold)) 20%, transparent);
   }
-  .feature .icon {
-    width: 44px; height: 44px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; margin-bottom: 16px;
-    background: color-mix(in srgb, var(--accent, var(--gold)) 14%, transparent);
+  .feature .frame {
+    height: 100%;
+    background: linear-gradient(180deg,
+      color-mix(in srgb, var(--accent, var(--gold)) 10%, #1C1428) 0%, #161021 100%);
+    border: 1px solid color-mix(in srgb, var(--accent, var(--gold)) 30%, #3A2C50);
+    border-radius: 10px; padding: 10px;
+    display: flex; flex-direction: column; gap: 8px;
   }
-  .feature h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
-  .feature p { color: var(--muted); font-size: 0.92rem; }
+  .feature .titlebar {
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(180deg, #2E2244, #1F1733);
+    border: 1px solid #4A3A68; border-radius: 8px;
+    padding: 8px 12px;
+  }
+  .feature .titlebar .icon { font-size: 1.1rem; }
+  .feature h3 { font-family: var(--font-display); font-size: 0.92rem; font-weight: 700; }
+  .feature .pip {
+    margin-left: auto; flex-shrink: 0;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%,
+      color-mix(in srgb, var(--accent, var(--gold)) 70%, white),
+      var(--accent, var(--gold)) 75%);
+    border: 1px solid rgba(0,0,0,0.55);
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.35);
+  }
+  .feature .typeline {
+    font-size: 0.74rem; color: var(--muted);
+    background: linear-gradient(180deg, #251C3A, #1D1530);
+    border: 1px solid #3A2C50; border-radius: 6px;
+    padding: 4px 12px;
+  }
+  .feature .textbox {
+    flex: 1;
+    background: linear-gradient(180deg, #211936, #1A1228);
+    border: 1px solid #34284C; border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .feature .textbox p { color: #BCAFCB; font-size: 0.9rem; }
   .f-w { --accent: var(--mana-w); }
   .f-u { --accent: var(--mana-u); }
   .f-b { --accent: var(--mana-b); }
@@ -219,8 +283,10 @@
   .steps { display: grid; gap: 18px; grid-template-columns: 1fr; }
   @media (min-width: 720px) { .steps { grid-template-columns: repeat(2, 1fr); } }
   .step {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 26px 22px;
+    background: linear-gradient(180deg, #1E1530, #181024);
+    border: 9px solid #0E0A16; outline: 1px solid #050308;
+    border-radius: 18px; padding: 20px 18px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.45);
     display: flex; flex-direction: column;
   }
   .step-tag {
@@ -301,6 +367,9 @@
 </head>
 <body data-lang="en">
 
+<div class="bg-arcane"></div>
+<div class="bg-embers"></div>
+
 <div class="mana-line"></div>
 
 <header>
@@ -377,34 +446,44 @@
     <p class="section-sub" data-i18n="feat_sub">Five abilities, one for each color of mana.</p>
     <div class="features">
       <div class="feature f-w">
-        <div class="icon">⚖️</div>
-        <h3 data-i18n="f1t">Rules with official sources</h3>
-        <p data-i18n="f1p">Answers cite the rule number straight from the Comprehensive Rules — an always
-        up-to-date local source, never "from memory".</p>
+        <div class="frame">
+          <div class="titlebar"><span class="icon">⚖️</span><h3 data-i18n="f1t">Rules with official sources</h3><span class="pip"></span></div>
+          <div class="typeline" data-i18n="f1type">Enchantment — Comprehensive Rules</div>
+          <div class="textbox"><p data-i18n="f1p">Answers cite the rule number straight from the Comprehensive Rules — an always
+          up-to-date local source, never "from memory".</p></div>
+        </div>
       </div>
       <div class="feature f-u">
-        <div class="icon">🧑‍⚖️</div>
-        <h3 data-i18n="f2t">Judge's verdict</h3>
-        <p data-i18n="f2p">Complex card interactions resolved step by step: stack order, priority and
-        the final game state.</p>
+        <div class="frame">
+          <div class="titlebar"><span class="icon">🧑‍⚖️</span><h3 data-i18n="f2t">Judge's verdict</h3><span class="pip"></span></div>
+          <div class="typeline" data-i18n="f2type">Legendary Creature — Judge</div>
+          <div class="textbox"><p data-i18n="f2p">Complex card interactions resolved step by step: stack order, priority and
+          the final game state.</p></div>
+        </div>
       </div>
       <div class="feature f-r">
-        <div class="icon">🔍</div>
-        <h3 data-i18n="f3t">Live card search</h3>
-        <p data-i18n="f3p">Names in English or Portuguese, format legality, prices and official
-        rulings — always current.</p>
+        <div class="frame">
+          <div class="titlebar"><span class="icon">🔍</span><h3 data-i18n="f3t">Live card search</h3><span class="pip"></span></div>
+          <div class="typeline" data-i18n="f3type">Instant — Search</div>
+          <div class="textbox"><p data-i18n="f3p">Names in English or Portuguese, format legality, prices and official
+          rulings — always current.</p></div>
+        </div>
       </div>
       <div class="feature f-g">
-        <div class="icon">🃏</div>
-        <h3 data-i18n="f4t">Decks &amp; brackets</h3>
-        <p data-i18n="f4p">Mana curve, community-recommended synergies, Commander brackets (1–5) and
-        up-to-date Game Changers.</p>
+        <div class="frame">
+          <div class="titlebar"><span class="icon">🃏</span><h3 data-i18n="f4t">Decks &amp; brackets</h3><span class="pip"></span></div>
+          <div class="typeline" data-i18n="f4type">Sorcery — Deckbuilding</div>
+          <div class="textbox"><p data-i18n="f4p">Mana curve, community-recommended synergies, Commander brackets (1–5) and
+          up-to-date Game Changers.</p></div>
+        </div>
       </div>
       <div class="feature f-b">
-        <div class="icon">📚</div>
-        <h3 data-i18n="f5t">For new players</h3>
-        <p data-i18n="f5p">A beginner-friendly knowledge base — from a quick-start guide to the
-        official basic rulebook.</p>
+        <div class="frame">
+          <div class="titlebar"><span class="icon">📚</span><h3 data-i18n="f5t">For new players</h3><span class="pip"></span></div>
+          <div class="typeline" data-i18n="f5type">Artifact — Knowledge</div>
+          <div class="textbox"><p data-i18n="f5p">A beginner-friendly knowledge base — from a quick-start guide to the
+          official basic rulebook.</p></div>
+        </div>
       </div>
     </div>
   </div>
@@ -441,14 +520,14 @@
         <h3 data-i18n="s1t">Add the connector</h3>
         <p data-i18n="s1p">In the Claude app or website, go to <strong>Settings → Connectors →
         Add connector</strong> and paste this link:</p>
-        <div class="code"><button class="copy-btn" data-copy="https://mcp.magicjudge.app/mcp" data-i18n="copy">Copy</button>https://mcp.magicjudge.app/mcp</div>
+        <div class="code"><button class="copy-btn" data-copy="https://mcp-magic.tcgagents.com/mcp" data-i18n="copy">Copy</button>https://mcp-magic.tcgagents.com/mcp</div>
       </div>
       <div class="step">
         <span class="step-tag" data-i18n="s2tag">Step 1 · Terminal</span>
         <h3 data-i18n="s2t">Claude Code &amp; dev tools</h3>
         <p data-i18n="s2p">One command in your terminal:</p>
-        <div class="code"><button class="copy-btn" data-copy="claude mcp add --transport http magic-judge https://mcp.magicjudge.app/mcp" data-i18n="copy">Copy</button>claude mcp add --transport http magic-judge \
-  https://mcp.magicjudge.app/mcp</div>
+        <div class="code"><button class="copy-btn" data-copy="claude mcp add --transport http magic-judge https://mcp-magic.tcgagents.com/mcp" data-i18n="copy">Copy</button>claude mcp add --transport http magic-judge \
+  https://mcp-magic.tcgagents.com/mcp</div>
         <p class="note" data-i18n="s2note">The same endpoint works in Cursor, VS Code and any other MCP client.</p>
       </div>
       <div class="step">
