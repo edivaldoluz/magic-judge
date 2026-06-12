@@ -1,85 +1,79 @@
-# magic-judge 🧙‍♂️
+# Magic Judge ⚖️
 
-Plugin do [Claude Code](https://claude.com/claude-code) que transforma o Claude em um
-assistente completo de **Magic: The Gathering**:
+O juiz de **Magic: The Gathering** para a sua IA — um serviço online que
+responde dúvidas de regras citando a regra oficial, dá vereditos passo a
+passo, busca cartas ao vivo e ajuda a montar decks por bracket.
 
-- ⚖️ **Tira-dúvidas de regras** — responde citando a regra oficial (Comprehensive Rules)
-- 🔍 **Busca de cartas** — integração com a [API da Scryfall](https://scryfall.com/docs/api) (preços, legalidade, rulings, busca avançada)
-- 🃏 **Montagem de decks** — curva de mana, sinergias, legalidade, orçamento, lista exportável
-- 📚 **Base de conhecimento local** — regras oficiais + manuais em português
+Feito de jogador para jogador. Gratuito e de código aberto.
 
-## Instalação (qualquer máquina com Claude Code)
-
-```bash
-git clone https://github.com/edivaldoluz/magic-judge.git
-claude
-```
-
-Dentro do Claude Code:
-
-```
-/plugin marketplace add edivaldoluz/magic-judge
-/plugin install magic-judge@edi-magic
-```
-
-(Quem abrir o Claude Code dentro da pasta clonada já recebe o plugin
-automaticamente via `.claude/settings.json` — inclusive em sessões na nuvem
-pela aba Code do app.)
-
-Pronto. Funciona em Windows, Mac e Linux — só precisa do Claude Code logado.
+**🌐 Site oficial: <https://edivaldoluz.github.io/magic-judge/>**
 
 ## Como usar
 
-Converse naturalmente em qualquer sessão:
+O Magic Judge fala [MCP](https://modelcontextprotocol.io) — o padrão aberto de
+conectores para IAs. Funciona no Claude, ChatGPT, Cursor, VS Code e qualquer
+cliente compatível. Não precisa instalar nada: é só conectar.
 
-- *"Se eu bloquear uma criatura com trample usando uma com deathtouch, o que acontece?"*
-- *"Busca remoções pretas até 2 de mana legais em Pauper"*
-- *"Quanto custa um Sol Ring? É legal em Modern?"*
-- *"Monta um deck Commander do Krenko com orçamento de 50 dólares"*
-- *"Analisa essa lista e melhora a curva de mana: ..."*
+1. **No seu app de IA:** adicione um conector apontando para
+   `https://mcp.magicjudge.app/mcp` *(link provisório — divulgação em breve no site)*
+   — ex.: Claude → Configurações → Conectores → Adicionar conector.
+2. **No terminal:**
+   ```bash
+   claude mcp add --transport http magic-judge https://mcp.magicjudge.app/mcp
+   ```
+3. **Pacote de skills (opcional, para o Claude):** baixe no
+   [site](https://edivaldoluz.github.io/magic-judge/) e envie em
+   Configurações → Skills — afia ainda mais o juiz.
 
-Para interações complexas de regras, peça o agente juiz: *"usa o juiz-mtg pra resolver isso"*.
+Depois é só perguntar: *"Bloqueei com toque mortífero uma criatura com
+atropelar — o que acontece?"*, *"Monta um Commander do Krenko bracket 2"*...
 
-## Estrutura
+## O que o serviço oferece
+
+| Ferramenta | O que faz |
+|---|---|
+| `buscar_regra` | Busca nas Comprehensive Rules oficiais (número da regra ou termo) |
+| `info_brackets` | Guia dos brackets 1–5 do Commander + Game Changers |
+| `buscar_carta` | Carta por nome (EN ou PT-BR) — texto oficial, legalidade, preço |
+| `busca_avancada` | Busca avançada de cartas (cor, tipo, formato, preço...) |
+| `rulings_carta` | Rulings oficiais de uma carta |
+| `recomendacoes_comandante` | Sinergias e staples por comandante (com variante budget) |
+| `verificar_game_changers` | Confere uma lista contra a lista viva de Game Changers |
+
+## Para desenvolvedores
+
+O serviço é um servidor MCP em NestJS — código em [`mcp-server/`](mcp-server/),
+instruções de build e execução local no
+[README do servidor](mcp-server/README.md).
+
+Principais pastas:
 
 ```
 magic-judge/
-├── .claude-plugin/
-│   ├── plugin.json          # manifesto do plugin
-│   └── marketplace.json     # permite instalar via /plugin
-├── agents/
-│   └── juiz-mtg.md          # agente juiz para interações complexas
-├── skills/
-│   ├── regras-mtg/          # como buscar e citar regras oficiais
-│   ├── busca-cartas/        # API Scryfall e sintaxe de busca
-│   └── montar-deck/         # metodologia de deckbuilding
-├── conhecimento/
-│   ├── comprehensive-rules.txt   # regras oficiais completas (EN)
-│   ├── commander-brackets.md     # brackets 1-5 do Commander + Game Changers
-│   ├── manual-basico-ptbr.txt    # manual básico oficial (PT-BR)
-│   └── guia-rapido-ptbr.txt      # guia rápido para iniciantes (PT-BR)
-├── mcp-server/                   # servidor MCP em NestJS (conector p/ app do Claude)
-├── claude-ai-project/            # kit para criar o Project no claude.ai (mobile)
-└── docs/                         # prompt da landing page e materiais
+├── mcp-server/      # o serviço MCP (NestJS, Node 24)
+├── skills/          # fonte do pacote de skills distribuído no site
+├── conhecimento/    # Comprehensive Rules + brackets + manuais PT-BR
+├── docs/            # site (GitHub Pages) + downloads + i18n
+└── design/          # design system da página (Claude Design)
 ```
 
 ## Atualizando as regras
 
 A Wizards publica a Comprehensive Rules atualizada a cada coleção em
-<https://magic.wizards.com/en/rules>. Para atualizar, baixe o arquivo `.txt`
-mais recente e substitua `conhecimento/comprehensive-rules.txt`.
+<https://magic.wizards.com/en/rules>. Baixe o `.txt` mais recente e substitua
+`conhecimento/comprehensive-rules.txt`.
 
-## Adicionando mais material (PDFs, guias)
+## Sugestões e melhorias
 
-1. Converta o PDF para texto (ex.: `pdftotext arquivo.pdf arquivo.txt`)
-2. Coloque o `.txt`/`.md` em `conhecimento/`
-3. Adicione uma linha na tabela "Base de conhecimento" em `skills/regras-mtg/SKILL.md`
-   para o agente saber que o arquivo existe
+Abra uma [issue](https://github.com/edivaldoluz/magic-judge/issues).
 
 ## Fontes
 
 - Comprehensive Rules © Wizards of the Coast — versão de 17/04/2026
 - Manuais básicos oficiais em PT-BR (M14/M15) © Wizards of the Coast
 - Dados de cartas: [Scryfall](https://scryfall.com) (API gratuita)
+- Recomendações de decks: [EDHREC](https://edhrec.com)
 
-Material não-oficial de fã, sob a [Fan Content Policy](https://company.wizards.com/en/legal/fancontentpolicy) da Wizards of the Coast.
+Magic Judge é conteúdo de fã não-oficial, sob a
+[Fan Content Policy](https://company.wizards.com/en/legal/fancontentpolicy)
+da Wizards of the Coast. Magic: The Gathering © Wizards of the Coast.
