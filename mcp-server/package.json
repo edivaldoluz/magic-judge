@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Servidor MCP do Magic Judge — regras oficiais, Scryfall, EDHREC e brackets de Commander",
   "private": true,
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",

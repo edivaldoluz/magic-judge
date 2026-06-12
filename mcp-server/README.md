@@ -21,6 +21,8 @@ A base de regras é lida de `../conhecimento/` (configurável via env
 
 ## Rodando
 
+Requer **Node 24** (`.nvmrc` incluso — `nvm use` resolve).
+
 ```bash
 npm install
 npm run build
