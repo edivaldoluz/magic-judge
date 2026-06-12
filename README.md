@@ -51,6 +51,7 @@ magic-judge/
 │   └── montar-deck/         # metodologia de deckbuilding
 └── conhecimento/
     ├── comprehensive-rules.txt   # regras oficiais completas (EN)
+    ├── commander-brackets.md     # brackets 1-5 do Commander + Game Changers
     ├── manual-basico-ptbr.txt    # manual básico oficial (PT-BR)
     └── guia-rapido-ptbr.txt      # guia rápido para iniciantes (PT-BR)
 ```

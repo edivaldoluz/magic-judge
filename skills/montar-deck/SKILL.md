@@ -1,6 +1,6 @@
 ---
 name: montar-deck
-description: Ajuda a montar, analisar e melhorar decks de Magic The Gathering — curva de mana, base de terrenos, sinergias, legalidade por formato, orçamento e exportação da lista. Use quando o usuário pedir para montar um deck, avaliar uma lista, sugerir melhorias ou adaptar um deck a um formato/orçamento.
+description: Ajuda a montar, analisar e melhorar decks de Magic The Gathering — curva de mana, base de terrenos, sinergias, legalidade por formato, orçamento, brackets de Commander (1-5, Game Changers) e exportação da lista. Use quando o usuário pedir para montar um deck, avaliar uma lista, classificar o bracket/nível de poder de um deck, sugerir melhorias ou adaptar um deck a um formato/orçamento/bracket.
 ---
 
 # Montagem e análise de decks
@@ -8,9 +8,13 @@ description: Ajuda a montar, analisar e melhorar decks de Magic The Gathering �
 ## Antes de começar, confirme com o usuário
 
 1. **Formato** (Commander, Standard, Modern, Pioneer, Pauper, Legacy, casual...)
-2. **Arquétipo/tema** desejado (aggro, controle, tribal, combo, comandante específico...)
-3. **Orçamento** (se houver)
-4. **Cartas que já possui** (se quiser aproveitar a coleção)
+2. **Se for Commander: o bracket alvo (1–5)** — ver
+   `${CLAUDE_PLUGIN_ROOT}/conhecimento/commander-brackets.md`. Se o usuário
+   não souber, pergunte como é a mesa dele (casual de precon? otimizada?) e
+   sugira o bracket adequado.
+3. **Arquétipo/tema** desejado (aggro, controle, tribal, combo, comandante específico...)
+4. **Orçamento** (se houver)
+5. **Cartas que já possui** (se quiser aproveitar a coleção)
 
 Se o usuário já deu essas informações, não pergunte de novo.
 
@@ -40,6 +44,21 @@ Terrenos básicos são sempre ilimitados (exceto restrições de identidade de c
 - 8–10 remoções pontuais + 3–5 remoções em massa
 - 25–30 cartas do plano de jogo/sinergia do comandante
 - 2–4 formas claras de fechar o jogo
+
+## Brackets do Commander (obrigatório em decks de Commander)
+
+Leia `${CLAUDE_PLUGIN_ROOT}/conhecimento/commander-brackets.md` antes de montar
+ou analisar qualquer deck de Commander. Pontos inegociáveis:
+
+- **Respeite as restrições do bracket alvo**: Game Changers (0 em B1–B2, até 3
+  em B3), combos infinitos de 2 cartas, mass land denial, turnos extras.
+- **Valide Game Changers ao vivo na Scryfall** (`is:gamechanger`) — a lista
+  muda; nunca confie na memória. Para brackets 1–2, filtre sugestões com
+  `-is:gamechanger`.
+- **Ao entregar o deck, informe o bracket resultante** e o que o faria subir
+  ou descer (ex: "trocar X por Y desce para Bracket 2").
+- Ao **analisar** um deck existente, classifique o bracket dele no menor
+  nível cujos critérios cumpre.
 
 ## Fluxo de trabalho
 
