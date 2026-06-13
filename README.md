@@ -15,7 +15,7 @@ conectores para IAs. Funciona no Claude, ChatGPT, Cursor, VS Code e qualquer
 cliente compatível. Não precisa instalar nada: é só conectar.
 
 1. **No seu app de IA:** adicione um conector apontando para
-   `https://mcp-magic.tcgagents.com/mcp` *(link provisório — divulgação em breve no site)*
+   `https://mcp-magic.tcgagents.com/mcp`
    — ex.: Claude → Configurações → Conectores → Adicionar conector.
 2. **No terminal:**
    ```bash
