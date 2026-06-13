@@ -5,13 +5,29 @@ description: Ajuda a montar, analisar e melhorar decks de Magic The Gathering �
 
 # Montagem e análise de decks
 
+Esta skill orquestra o **conector Magic Judge** (MCP) — ele consulta Scryfall,
+EDHREC e a lista de Game Changers server-side. Ela não lê arquivos locais nem
+faz requisições próprias (nada de `curl`). **Pré-requisito:** o conector
+Magic Judge precisa estar ligado (no claude.ai: Configurações → Conectores;
+no Claude Code: `claude mcp add`). Se as ferramentas abaixo não existirem,
+avise que o conector não está conectado.
+
+## Ferramentas do conector
+
+| Ferramenta | Para quê | Entrada |
+|---|---|---|
+| `info_brackets` | Guia dos brackets 1–5 do Commander + lista de Game Changers | — |
+| `recomendacoes_comandante` | Sinergias e staples de um comandante (EDHREC) | `comandante`, `orcamento` |
+| `busca_avancada` | Descobrir cartas por critério (formato, cor, preço...) | `consulta`, `ordem`, `max_resultados` |
+| `verificar_game_changers` | Quais cartas de uma lista são Game Changers | `cartas[]` |
+| `buscar_carta` | Confirmar texto/legalidade/preço de uma carta | `nome` |
+
 ## Antes de começar, confirme com o usuário
 
 1. **Formato** (Commander, Standard, Modern, Pioneer, Pauper, Legacy, casual...)
-2. **Se for Commander: o bracket alvo (1–5)** — ver
-   `${CLAUDE_PLUGIN_ROOT}/conhecimento/commander-brackets.md`. Se o usuário
-   não souber, pergunte como é a mesa dele (casual de precon? otimizada?) e
-   sugira o bracket adequado.
+2. **Se for Commander: o bracket alvo (1–5)** — chame `info_brackets` para o
+   guia. Se o usuário não souber, pergunte como é a mesa dele (casual de
+   precon? otimizada?) e sugira o bracket adequado.
 3. **Arquétipo/tema** desejado (aggro, controle, tribal, combo, comandante específico...)
 4. **Orçamento** (se houver)
 5. **Cartas que já possui** (se quiser aproveitar a coleção)
@@ -47,68 +63,43 @@ Terrenos básicos são sempre ilimitados (exceto restrições de identidade de c
 
 ## Brackets do Commander (obrigatório em decks de Commander)
 
-Leia `${CLAUDE_PLUGIN_ROOT}/conhecimento/commander-brackets.md` antes de montar
-ou analisar qualquer deck de Commander. Pontos inegociáveis:
+Chame `info_brackets` antes de montar ou analisar qualquer deck de Commander.
+Pontos inegociáveis:
 
 - **Respeite as restrições do bracket alvo**: Game Changers (0 em B1–B2, até 3
   em B3), combos infinitos de 2 cartas, mass land denial, turnos extras.
-- **Valide Game Changers ao vivo na Scryfall** (`is:gamechanger`) — a lista
-  muda; nunca confie na memória. Para brackets 1–2, filtre sugestões com
-  `-is:gamechanger`.
+- **Valide Game Changers ao vivo**: passe a lista final por
+  `verificar_game_changers` (a lista muda; nunca confie na memória). Para
+  brackets 1–2, filtre as sugestões com `-is:gamechanger` na `busca_avancada`.
 - **Ao entregar o deck, informe o bracket resultante** e o que o faria subir
   ou descer (ex: "trocar X por Y desce para Bracket 2").
-- Ao **analisar** um deck existente, classifique o bracket dele no menor
-  nível cujos critérios cumpre.
+- Ao **analisar** um deck existente, classifique-o no menor nível cujos
+  critérios cumpre (confirme os Game Changers da lista com `verificar_game_changers`).
 
 ## EDHREC — recomendações por comandante (Commander)
 
-O EDHREC agrega dezenas de milhares de decklists reais. Use-o como ponto de
-partida para descobrir as cartas mais jogadas e mais sinérgicas com um
-comandante. Endpoints JSON (sem autenticação):
-
-```bash
-# Página do comandante (slug: nome em minúsculas, sem pontuação, espaços viram hífens)
-# Ex.: "Krenko, Mob Boss" -> krenko-mob-boss
-curl -s "https://json.edhrec.com/pages/commanders/krenko-mob-boss.json" \
-  -H "User-Agent: magic-judge-plugin/1.0"
-
-# Variante econômica do mesmo comandante
-curl -s "https://json.edhrec.com/pages/commanders/krenko-mob-boss/budget.json" ...
-
-# Deck médio (lista média agregada)
-curl -s "https://json.edhrec.com/pages/average-decks/krenko-mob-boss.json" ...
-```
-
-Campos úteis na resposta:
-- Raiz: `avg_price`, contagens por tipo (`creature`, `land`...), `similar`
-  (comandantes parecidos), `num_decks_avg` (popularidade)
-- `container.json_dict.cardlists[]` — listas por categoria, cada uma com
-  `header` ("High Synergy Cards", "Top Cards", "Game Changers", "Creatures",
-  "Instants"...) e `cardviews[]` contendo:
-  - `name` — nome da carta
-  - `synergy` — taxa de sinergia com ESTE comandante (0.30 = aparece 30 p.p.
-    mais em decks dele do que na média geral; é o melhor sinal de sinergia)
-  - `num_decks` / `potential_decks` — em quantos decks aparece
+Use `recomendacoes_comandante` (passe o nome oficial do comandante em inglês;
+`orcamento: true` para a versão econômica) como ponto de partida — ele agrega
+dezenas de milhares de decks reais e devolve as cartas de maior sinergia e as
+mais jogadas.
 
 Como usar bem:
 - **High Synergy Cards** = identidade do deck; **Top Cards** = staples do
   comandante. Combine os dois com o tema pedido pelo usuário.
 - EDHREC indica POPULARIDADE, não adequação ao bracket/orçamento — valide
-  cada carta na Scryfall (legalidade, `is:gamechanger`, preço) antes de
-  incluir.
-- É API não-oficial da comunidade: se o endpoint falhar, siga só com a
-  Scryfall (`order=edhrec` na busca já ordena por popularidade).
+  cada carta com `busca_avancada`/`buscar_carta` (legalidade, `is:gamechanger`,
+  preço) antes de incluir.
 
 ## Fluxo de trabalho
 
-1. **Valide a legalidade** de cada carta sugerida na Scryfall
-   (`f:<formato>` na busca, ou campo `legalities` da carta) — nunca confie
-   na memória, banlists mudam. Em Commander, valide também a identidade
+1. **Valide a legalidade** de cada carta sugerida com `busca_avancada`
+   (`f:<formato>` na consulta) ou `buscar_carta` (campo de legalidade) — nunca
+   confie na memória, banlists mudam. Em Commander, valide também a identidade
    de cor com `id<=<cores do comandante>`.
-2. **Descubra cartas candidatas**: em Commander, comece pelo EDHREC (seção
-   acima — High Synergy + Top Cards do comandante); nos demais formatos (ou
-   se o EDHREC falhar), use a Scryfall com `order=edhrec` para staples.
-3. **Orçamento:** filtre com `usd<=X` na busca. Avise que preços são em USD
+2. **Descubra cartas candidatas**: em Commander, comece por
+   `recomendacoes_comandante` (High Synergy + Top Cards); nos demais formatos,
+   use `busca_avancada` com `ordem: edhrec` para staples.
+3. **Orçamento:** filtre com `usd<=X` na consulta. Avise que preços são em USD
    (referência) e variam no Brasil.
 4. **Cheque a curva de mana** ao final: conte cartas por valor de mana e
    ajuste — a maioria dos decks quer o pico em 2–3 de mana.
@@ -134,4 +125,5 @@ Junto com a lista, apresente:
 - Distribuição da curva de mana (contagem por custo)
 - Resumo do plano de jogo (como o deck vence)
 - Custo total estimado (se orçamento foi mencionado)
+- Em Commander: o bracket resultante (validado com `verificar_game_changers`)
 - 3–5 sugestões de upgrade futuro (opcional)

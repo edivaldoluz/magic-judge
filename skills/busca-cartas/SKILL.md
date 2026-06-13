@@ -1,59 +1,37 @@
 ---
 name: busca-cartas
-description: Busca cartas de Magic The Gathering na API da Scryfall — por nome (inglês ou português), cor, tipo, custo, formato, preço, texto. Use quando o usuário perguntar sobre uma carta específica, pedir sugestões de cartas, preços, legalidade em formatos, rulings oficiais ou qualquer busca de cards.
+description: Busca cartas de Magic The Gathering — por nome (inglês ou português), cor, tipo, custo, formato, preço, texto. Use quando o usuário perguntar sobre uma carta específica, pedir sugestões de cartas, preços, legalidade em formatos, rulings oficiais ou qualquer busca de cards.
 ---
 
-# Busca de cartas — API Scryfall
+# Busca de cartas
 
-A Scryfall (https://api.scryfall.com) é gratuita e não exige autenticação.
+Esta skill orquestra o **conector Magic Judge** (MCP), que consulta a Scryfall
+server-side. Ela não faz requisições próprias (nada de `curl`) — use as
+ferramentas do conector. **Pré-requisito:** o conector Magic Judge precisa
+estar ligado (no claude.ai: Configurações → Conectores; no Claude Code:
+`claude mcp add`). Se as ferramentas abaixo não existirem, avise que o conector
+não está conectado.
 
-## Etiqueta obrigatória
+## Princípio
 
-- Sempre envie os headers: `-H "User-Agent: magic-judge-plugin/1.0" -H "Accept: application/json"`
-- Máximo ~10 requisições/segundo. Em loops, aguarde ~100ms entre chamadas.
-- Use `curl` via Bash (funciona em Windows, Mac e Linux).
+**NUNCA afirme o que uma carta faz de memória** — o texto oficial muda com
+erratas. Sempre confirme com `buscar_carta` antes de descrever uma carta.
 
-## Endpoints principais
+## Ferramentas do conector
 
-### Carta por nome (tolerante a erros de grafia — nome em INGLÊS)
-```bash
-curl -s --get "https://api.scryfall.com/cards/named" \
-  --data-urlencode "fuzzy=lightning bolt" \
-  -H "User-Agent: magic-judge-plugin/1.0" -H "Accept: application/json"
-```
+| Ferramenta | Quando usar | Entrada |
+|---|---|---|
+| `buscar_carta` | Uma carta específica pelo nome (EN ou PT, tolera erro de grafia) | `nome` |
+| `busca_avancada` | Descobrir cartas por critérios (cor, tipo, formato, preço...) | `consulta` (sintaxe Scryfall), `ordem`, `max_resultados` |
+| `rulings_carta` | Rulings oficiais de uma carta | `nome` |
 
-### Nome em PORTUGUÊS
-O endpoint `named` só aceita inglês. Para nome em PT, use busca com `lang:pt`:
-```bash
-curl -s --get "https://api.scryfall.com/cards/search" \
-  --data-urlencode "q=lang:pt \"Relâmpago\"" \
-  --data-urlencode "include_multilingual=true" \
-  -H "User-Agent: magic-judge-plugin/1.0" -H "Accept: application/json"
-```
-No resultado, `printed_name` é o nome em PT e `name` é o nome oficial em inglês —
-use o nome em inglês para as buscas seguintes.
+- Nome em **português** funciona direto em `buscar_carta` e `rulings_carta`
+  (ex: "Relâmpago"). Na resposta, use o nome oficial em inglês na primeira
+  menção, com o nome em PT entre parênteses quando souber.
+- `busca_avancada` espera a **consulta em inglês** na sintaxe Scryfall (abaixo).
+  Por padrão ordena por `edhrec` (popularidade).
 
-### Busca avançada
-```bash
-curl -s --get "https://api.scryfall.com/cards/search" \
-  --data-urlencode "q=c:r t:instant mv<=2 f:pauper o:damage" \
-  --data-urlencode "order=edhrec" \
-  -H "User-Agent: magic-judge-plugin/1.0" -H "Accept: application/json"
-```
-
-### Rulings oficiais de uma carta
-```bash
-# 1º: buscar a carta e pegar o campo "id"; depois:
-curl -s "https://api.scryfall.com/cards/<ID>/rulings" \
-  -H "User-Agent: magic-judge-plugin/1.0" -H "Accept: application/json"
-```
-
-### Carta aleatória (com filtro opcional)
-```bash
-curl -s --get "https://api.scryfall.com/cards/random" --data-urlencode "q=t:legendary t:creature"
-```
-
-## Sintaxe de busca (parâmetro q)
+## Sintaxe de busca (campo `consulta` da `busca_avancada`)
 
 | Filtro | Sintaxe | Exemplo |
 |---|---|---|
@@ -65,25 +43,12 @@ curl -s --get "https://api.scryfall.com/cards/random" --data-urlencode "q=t:lege
 | Poder/resistência | `pow` / `tou` | `pow>=4 tou<=2` |
 | Legalidade | `f:` ou `legal:` | `f:pauper`, `legal:commander` |
 | Banida/restrita | `banned:` / `restricted:` | `banned:modern` |
-| Preço | `usd` / `eur` | `usd<=0.50` |
+| Preço (USD) | `usd` | `usd<=0.50` |
 | Raridade | `r:` | `r:common`, `r<=uncommon` |
 | Coleção | `s:` ou `e:` | `s:mh3` |
-| Idioma | `lang:` | `lang:pt` |
-| É de um tipo especial | `is:` | `is:commander`, `is:fetchland` |
-| Ordenação | `order=` (parâmetro) | `order=edhrec`, `order=usd` |
-| Negação | `-` | `-t:land` |
+| É de um tipo especial | `is:` | `is:commander`, `is:gamechanger`, `is:fetchland` |
+| Negação | `-` | `-t:land`, `-is:gamechanger` |
 | OU lógico | `or` | `(c:r or c:w) t:instant` |
-
-## Campos úteis na resposta JSON
-
-`name`, `printed_name` (se idioma ≠ en), `mana_cost`, `cmc`, `type_line`,
-`oracle_text`, `power`, `toughness`, `colors`, `color_identity`,
-`legalities` (objeto por formato: legal/not_legal/banned/restricted),
-`prices.usd`, `prices.usd_foil`, `set_name`, `rarity`,
-`image_uris.normal`, `scryfall_uri`, `id` (para rulings).
-
-A resposta de `/cards/search` é paginada: `total_cards`, `has_more` e
-`next_page`. Busque a próxima página apenas se necessário.
 
 ## Como apresentar os resultados
 
@@ -92,4 +57,5 @@ A resposta de `/cards/search` é paginada: `total_cards`, `has_more` e
 - Preço em USD quando relevante (avise que é referência internacional;
   preços no Brasil variam — consultar Liga Magic/lojas locais).
 - Legalidade apenas nos formatos que interessam à conversa.
-- Em listas longas, apresente as 5–10 mais relevantes e diga quantas existem no total.
+- Em listas longas, apresente as 5–10 mais relevantes e diga quantas existem
+  no total. Para puxar mais, aumente `max_resultados` (até 40).

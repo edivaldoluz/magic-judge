@@ -1,42 +1,31 @@
 ---
 name: regras-mtg
-description: Responde dúvidas de regras de Magic The Gathering citando as regras oficiais (Comprehensive Rules). Use sempre que o usuário perguntar sobre regras, interações entre cartas, palavras-chave (trample, deathtouch, etc.), prioridade, pilha, camadas, fases do turno, combate ou qualquer dúvida do tipo "o que acontece se...". Nunca responda regras de Magic apenas de memória — consulte sempre a base oficial.
+description: Responde dúvidas de regras de Magic The Gathering citando as regras oficiais (Comprehensive Rules). Use sempre que o usuário perguntar sobre regras, interações entre cartas, palavras-chave (trample, deathtouch, etc.), prioridade, pilha, camadas, fases do turno, combate ou qualquer dúvida do tipo "o que acontece se...". Nunca responda regras de Magic apenas de memória — consulte sempre o conector Magic Judge.
 ---
 
 # Regras de Magic: The Gathering
 
+Esta skill orquestra o **conector Magic Judge** (MCP). Ela não lê arquivos
+locais nem faz requisições próprias — todo o conhecimento vem das ferramentas
+do conector. **Pré-requisito:** o conector Magic Judge precisa estar ligado
+(no claude.ai: Configurações → Conectores; no Claude Code: `claude mcp add`).
+Se as ferramentas abaixo não existirem, avise o usuário que o conector não
+está conectado.
+
 ## Princípio fundamental
 
-**NUNCA responda uma dúvida de regras apenas de memória.** Sempre confirme na
-Comprehensive Rules oficial antes de responder e **cite o número da regra**
+**NUNCA responda uma dúvida de regras apenas de memória.** Sempre confirme com
+a ferramenta `buscar_regra` antes de responder e **cite o número da regra**
 (ex: regra 702.19c) na resposta. Se a dúvida envolve uma carta específica,
-consulte também os rulings oficiais dela na Scryfall (ver skill `busca-cartas`).
+confirme o texto oficial com `buscar_carta` e consulte `rulings_carta`.
 
-## Base de conhecimento
+## Ferramentas do conector que esta skill usa
 
-| Arquivo | Conteúdo | Idioma |
-|---|---|---|
-| `${CLAUDE_PLUGIN_ROOT}/conhecimento/comprehensive-rules.txt` | Regras completas oficiais (autoridade máxima) | Inglês |
-| `${CLAUDE_PLUGIN_ROOT}/conhecimento/manual-basico-ptbr.txt` | Manual básico oficial — explicações didáticas | Português |
-| `${CLAUDE_PLUGIN_ROOT}/conhecimento/guia-rapido-ptbr.txt` | Guia rápido para iniciantes | Português |
-
-A versão e data de vigência da Comprehensive Rules estão nas primeiras linhas
-do arquivo ("These rules are effective as of ...").
-
-## Estrutura da Comprehensive Rules
-
-As regras são numeradas por seção — use isso para direcionar a busca:
-
-- **1xx** — Conceitos do jogo (cores, mana, zonas, vida, contadores)
-- **2xx** — Partes de um card (custo, tipos, poder/resistência)
-- **3xx** — Tipos de card (criatura, terreno, instantâneo, planeswalker...)
-- **4xx** — Zonas (grimório, mão, campo de batalha, cemitério, pilha, exílio)
-- **5xx** — Estrutura do turno (fases, etapas, combate)
-- **6xx** — Mágicas, habilidades e efeitos (601 conjurar, 603 habilidades desencadeadas, 613 camadas/layers)
-- **7xx** — Regras adicionais (**702 = TODAS as palavras-chave**, 704 ações baseadas em estado)
-- **8xx** — Multiplayer
-- **9xx** — Variantes casuais (903 = Commander)
-- **Glossário** — no final do arquivo, ordem alfabética
+| Ferramenta | Para quê |
+|---|---|
+| `buscar_regra` | Busca nas Comprehensive Rules. Aceita número (`702.19`) ou termo em inglês (`trample assign lethal`). |
+| `buscar_carta` | Texto oficial (oracle), tipo, legalidade e preço de uma carta. |
+| `rulings_carta` | Rulings oficiais (decisões de juiz) de uma carta. |
 
 ## Como buscar — da dúvida à regra
 
@@ -47,23 +36,30 @@ natural ("posso responder com contramágica depois que ele pagou o mana?").
 1. **Extraia os conceitos da dúvida.** Que mecânicas estão envolvidas?
    (ex: "bloqueei com deathtouch e ele tem trample" → dano de combate,
    dano letal, atribuição de dano, deathtouch, trample)
-2. **Traduza os conceitos para inglês** (tabela abaixo) — a Comprehensive
-   Rules é em inglês.
-3. **Localize a seção pela estrutura** (mapa acima): palavra-chave de
-   habilidade → 702; combate → 5xx; conjurar/responder → 601/117;
-   "morreu/destruído quando" → 704. Em dúvida, comece pelo **Glossário**
-   no fim do arquivo, que aponta o número da regra de cada termo.
-4. **Faça Grep com mais de um termo candidato** e contexto (-A 5 ou mais):
-   `deathtouch`, `lethal damage`, `assign.*damage`. Se um termo não achar
-   nada útil, reformule — sinônimos, forma verbal diferente, termo do
-   glossário.
-5. **Leia a regra completa e TODAS as sub-regras** (702.2a, 702.2b...) —
-   a resposta quase sempre está no detalhe de uma sub-regra.
-6. **Se a dúvida envolve carta específica**, busque o oracle text e os
-   rulings dela na Scryfall (skill `busca-cartas`) — a interação pode
-   depender do texto exato da carta.
-7. Para perguntas de iniciante, complemente com os manuais em português
-   (explicação didática), mas a autoridade é sempre a Comprehensive Rules.
+2. **Traduza os conceitos para inglês** (tabela abaixo) — as Comprehensive
+   Rules são em inglês, então `buscar_regra` espera termos em inglês.
+3. **Mire a seção certa** pelo mapa abaixo: palavra-chave de habilidade → 702;
+   combate → 5xx; conjurar/responder → 601/117; "morreu/destruído quando" →
+   704. Em dúvida, busque o termo direto (o conector também acha pelo glossário).
+4. **Chame `buscar_regra` com mais de um termo candidato** se o primeiro não
+   resolver — sinônimos, forma verbal diferente, ou o número da regra que
+   apareceu num resultado anterior para puxar todas as sub-regras.
+5. **Leia a regra e TODAS as sub-regras** (702.2a, 702.2b...) — a resposta
+   quase sempre está no detalhe de uma sub-regra.
+6. **Se a dúvida envolve carta específica**, chame `buscar_carta` para o texto
+   exato e `rulings_carta` para os rulings — a interação pode depender disso.
+
+## Estrutura da Comprehensive Rules (para escolher o termo/numero de busca)
+
+- **1xx** — Conceitos do jogo (cores, mana, zonas, vida, contadores)
+- **2xx** — Partes de um card (custo, tipos, poder/resistência)
+- **3xx** — Tipos de card (criatura, terreno, instantâneo, planeswalker...)
+- **4xx** — Zonas (grimório, mão, campo de batalha, cemitério, pilha, exílio)
+- **5xx** — Estrutura do turno (fases, etapas, combate)
+- **6xx** — Mágicas, habilidades e efeitos (601 conjurar, 603 desencadeadas, 613 camadas)
+- **7xx** — Regras adicionais (**702 = TODAS as palavras-chave**, 704 ações baseadas em estado)
+- **8xx** — Multiplayer
+- **9xx** — Variantes casuais (903 = Commander)
 
 ## Glossário PT-BR → EN (termos mais comuns)
 
@@ -101,6 +97,6 @@ natural ("posso responder com contramágica depois que ele pagou o mana?").
 3. **Citação da regra**: número + tradução/resumo do trecho relevante
    (ex: *"Regra 702.2c: deathtouch faz qualquer quantidade de dano ser
    considerada letal"*).
-4. Se houver rulings da carta na Scryfall que esclarecem o caso, cite-os.
-5. Se a interação for ambígua ou depender de timing, monte o passo a passo
-   da pilha (o que resolve primeiro, quem tem prioridade).
+4. Se houver rulings da carta (via `rulings_carta`) que esclarecem o caso, cite-os.
+5. Se a interação depender de timing, monte o passo a passo da pilha
+   (o que resolve primeiro, quem tem prioridade).
