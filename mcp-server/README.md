@@ -2,7 +2,9 @@
 
 Servidor MCP (Model Context Protocol) do Magic Judge em **NestJS**. Expõe as
 capacidades do projeto como ferramentas que qualquer cliente MCP consome —
-incluindo o **conector do claude.ai** (app do celular) e o Claude Code.
+Claude (app e web), ChatGPT, Cursor, VS Code e afins.
+
+Em produção: **`https://mcp-magic.tcgagents.com/mcp`**
 
 ## Ferramentas
 
@@ -42,15 +44,19 @@ curl -s -X POST http://localhost:3333/mcp \
 
 ## Conectando
 
-**Claude Code (local):** adicione ao `.mcp.json` do projeto ou via
-`claude mcp add --transport http magic-judge http://localhost:3333/mcp`.
+Em qualquer cliente MCP, adicione um conector apontando para a URL pública
+(`https://mcp-magic.tcgagents.com/mcp`) ou para a instância local
+(`http://localhost:3333/mcp`):
 
-**Conector no claude.ai (app do celular):** publique o servidor numa URL
-HTTPS pública e adicione em Configurações → Conectores. *(Fase de deploy/CI-CD
-no servidor próprio — pendente.)*
+```bash
+claude mcp add --transport http magic-judge https://mcp-magic.tcgagents.com/mcp
+```
 
-## Próximos passos (roadmap)
+No app/web do Claude: Configurações → Conectores → Adicionar conector.
 
-- [ ] Deploy no servidor próprio com CI/CD (GitHub Actions)
-- [ ] HTTPS público + URL do conector divulgada no site
-- [ ] Autenticação opcional (se necessário limitar uso)
+## Deploy
+
+Containerizado via `mcp-server/Dockerfile` (build multi-stage, Node 24) e
+orquestrado pelo `docker-compose.yml` na raiz do repositório. O serviço é
+publicado automaticamente a cada push na branch `main`. A base de regras é
+embarcada na imagem a partir de `conhecimento/`.

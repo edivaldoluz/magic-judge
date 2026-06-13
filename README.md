@@ -50,12 +50,14 @@ Principais pastas:
 
 ```
 magic-judge/
-├── mcp-server/      # o serviço MCP (NestJS, Node 24)
-├── skills/          # fonte do pacote de skills distribuído no site
-├── conhecimento/    # Comprehensive Rules + brackets + manuais PT-BR
-├── docs/            # site (GitHub Pages) + downloads + i18n
-└── design/          # design system da página (Claude Design)
+├── mcp-server/      # o serviço MCP (NestJS, Node 24) — Dockerfile incluso
+├── skills/          # as 3 skills que orquestram o conector (distribuídas no site)
+├── conhecimento/    # base oficial que o servidor consulta (Comprehensive Rules, brackets)
+└── docs/            # site (GitHub Pages) + download das skills + traduções
 ```
+
+O deploy roda em container (`docker-compose.yml` + `mcp-server/Dockerfile`),
+publicado automaticamente a cada push na branch `main`.
 
 ## Atualizando as regras
 
