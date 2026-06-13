@@ -45,7 +45,7 @@
   "s3tag": "2 · Skills (optional)",
   "s3t": "Install the skills pack",
   "s3p1": "Skills add the method on top of the connector — how to look up rules, search cards and build decks by bracket.",
-  "s3p2": "Download the pack, then in Claude go to <strong>Settings → Capabilities → Customize</strong>, scroll to the bottom and add the skills by attaching the files.",
+  "s3p2": "Download and unzip the pack. In Claude, go to <strong>Settings → Capabilities → Customize</strong>, scroll to the bottom and add the 3 skills by attaching their files.",
   "s3btn": "⬇️ Download skills pack",
   "s4tag": "3 · Ready",
   "s4t": "Just ask",
