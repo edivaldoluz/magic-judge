@@ -45,7 +45,7 @@
   "s3tag": "2 · Skills (opcional)",
   "s3t": "Instale o pacote de skills",
   "s3p1": "As skills somam o método em cima do conector — como consultar regras, buscar cartas e montar decks por bracket.",
-  "s3p2": "Baixe o pacote e, no Claude, vá em <strong>Configurações → Habilidades</strong> e adicione.",
+  "s3p2": "Baixe o pacote e, no Claude, abra <strong>Capacidades → Personalizar</strong> (no final) e adicione as habilidades anexando os arquivos.",
   "s3btn": "⬇️ Baixar pacote de skills",
   "s4tag": "3 · Pronto",
   "s4t": "É só perguntar",
