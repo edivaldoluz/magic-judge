@@ -328,15 +328,19 @@
   .support-card h3 { font-size: 1rem; margin-bottom: 8px; }
   .support-card p { color: var(--muted); font-size: 0.88rem; margin-bottom: 16px; }
   .pix-box {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 10px;
     background: #0A0810; border: 1px dashed var(--gold);
-    border-radius: 10px; padding: 12px 14px;
-    font-family: ui-monospace, monospace; font-size: 0.85rem; color: var(--gold-bright);
+    border-radius: 10px; padding: 14px;
+    font-family: ui-monospace, monospace; color: var(--gold-bright);
+  }
+  .pix-box #pix-key {
+    font-size: 0.74rem; text-align: center;
+    white-space: nowrap; overflow-x: auto; max-width: 100%;
   }
   .pix-box button {
     background: var(--gold); border: none; color: #1A1408; font-weight: 700;
-    font-size: 0.75rem; padding: 6px 12px; border-radius: 7px; cursor: pointer;
-    font-family: var(--font-body); flex-shrink: 0;
+    font-size: 0.78rem; padding: 8px 12px; border-radius: 7px; cursor: pointer;
+    font-family: var(--font-body); width: 100%;
   }
 
   /* ===== Roadmap ===== */
@@ -561,7 +565,7 @@
         <h3 data-i18n="pix_t">💚 PIX (Brazil)</h3>
         <p data-i18n="pix_p">Every bit helps keep the judge on call.</p>
         <div class="pix-box">
-          <span id="pix-key" style="word-break:break-all; min-width:0">cd155cbf-4faf-4517-b829-f8fb32328509</span>
+          <span id="pix-key">cd155cbf-4faf-4517-b829-f8fb32328509</span>
           <button data-copy="cd155cbf-4faf-4517-b829-f8fb32328509" data-i18n="copy">Copy</button>
         </div>
       </div>
