@@ -7,6 +7,9 @@ import { RegrasTool } from './tools/regras.tool';
 import { CartasTool } from './tools/cartas.tool';
 import { DeckTool } from './tools/deck.tool';
 import { UsageLoggerMiddleware } from './usage-logger.middleware';
+import { BasicAuthMiddleware } from './basic-auth.middleware';
+import { PanelController } from './panel.controller';
+import { StatsService } from './stats.service';
 
 @Module({
   imports: [
@@ -20,6 +23,7 @@ import { UsageLoggerMiddleware } from './usage-logger.middleware';
         'Ao montar ou avaliar decks de Commander, use info_brackets e verificar_game_changers para respeitar o bracket alvo.',
     }),
   ],
+  controllers: [PanelController],
   providers: [
     KnowledgeService,
     ScryfallService,
@@ -27,10 +31,12 @@ import { UsageLoggerMiddleware } from './usage-logger.middleware';
     RegrasTool,
     CartasTool,
     DeckTool,
+    StatsService,
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer.apply(UsageLoggerMiddleware).forRoutes('mcp');
+    consumer.apply(BasicAuthMiddleware).forRoutes('painel', 'stats');
   }
 }
