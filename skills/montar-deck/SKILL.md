@@ -22,17 +22,28 @@ avise que o conector não está conectado.
 | `verificar_game_changers` | Quais cartas de uma lista são Game Changers | `cartas[]` |
 | `buscar_carta` | Confirmar texto/legalidade/preço de uma carta | `nome` |
 
-## Antes de começar, confirme com o usuário
+## Passo 0 — descubra o FORMATO primeiro (nunca assuma Commander)
 
-1. **Formato** (Commander, Standard, Modern, Pioneer, Pauper, Legacy, casual...)
-2. **Se for Commander: o bracket alvo (1–5)** — chame `info_brackets` para o
-   guia. Se o usuário não souber, pergunte como é a mesa dele (casual de
-   precon? otimizada?) e sugira o bracket adequado.
-3. **Arquétipo/tema** desejado (aggro, controle, tribal, combo, comandante específico...)
-4. **Orçamento** (se houver)
-5. **Cartas que já possui** (se quiser aproveitar a coleção)
+**Identificar o formato é sempre a primeira coisa.** Commander é só UM dos
+formatos — **não é o padrão**. Não force Commander por inércia.
+
+- **Leia as pistas do pedido:** "comandante/Commander/EDH/100 cartas" → Commander;
+  "Standard/Pioneer/Modern/Pauper/Legacy/Vintage/Premodern/Old School" →
+  construído de 60; "draft/selado/limited/40 cartas" → Limitado.
+- **Se o formato não estiver claro, PERGUNTE** antes de sugerir qualquer carta.
+- Só trate como Commander se o usuário disser explicitamente ou citar um comandante.
+
+Depois do formato, confirme só o que faltar:
+1. **Arquétipo/tema** (aggro, controle, tribal, combo...)
+2. **Orçamento** (se houver)
+3. **Cartas que já possui** (se quiser aproveitar a coleção)
+4. **Apenas se for Commander:** o **bracket alvo (1–5)** — chame `info_brackets`.
+   Se o usuário não souber, pergunte como é a mesa e sugira.
 
 Se o usuário já deu essas informações, não pergunte de novo.
+
+> As seções **Brackets**, **EDHREC/`recomendacoes_comandante`** e **identidade de
+> cor** abaixo valem **só para Commander** — ignore-as nos demais formatos.
 
 ## Regras de construção por formato
 
@@ -76,7 +87,10 @@ Pontos inegociáveis:
 - Ao **analisar** um deck existente, classifique-o no menor nível cujos
   critérios cumpre (confirme os Game Changers da lista com `verificar_game_changers`).
 
-## EDHREC — recomendações por comandante (Commander)
+## EDHREC — recomendações por comandante (SÓ Commander)
+
+`recomendacoes_comandante` é exclusivo de Commander. **Nos demais formatos não
+use** — descubra cartas com `busca_avancada` (`f:<formato>`, `ordem: edhrec`).
 
 Use `recomendacoes_comandante` (passe o nome oficial do comandante em inglês;
 `orcamento: true` para a versão econômica) como ponto de partida — ele agrega
@@ -92,13 +106,17 @@ Como usar bem:
 
 ## Fluxo de trabalho
 
-1. **Valide a legalidade** de cada carta sugerida com `busca_avancada`
-   (`f:<formato>` na consulta) ou `buscar_carta` (campo de legalidade) — nunca
-   confie na memória, banlists mudam. Em Commander, valide também a identidade
-   de cor com `id<=<cores do comandante>`.
-2. **Descubra cartas candidatas**: em Commander, comece por
-   `recomendacoes_comandante` (High Synergy + Top Cards); nos demais formatos,
-   use `busca_avancada` com `ordem: edhrec` para staples.
+1. **Sempre filtre pelo formato escolhido** com `busca_avancada` usando
+   `f:<formato>` (ex.: `f:pauper`, `f:premodern`, `f:modern`, `f:standard`,
+   `f:legacy`, `f:commander`) — assim todas as cartas já saem legais. Confirme
+   pontos específicos com `buscar_carta` (campo de legalidade). Nunca confie na
+   memória; banlists mudam.
+2. **Descubra cartas candidatas conforme o formato:**
+   - **Commander:** comece por `recomendacoes_comandante` (High Synergy + Top
+     Cards) e valide a identidade de cor com `id<=<cores do comandante>`.
+   - **Qualquer outro formato (60 ou Limitado):** use `busca_avancada` com
+     `f:<formato>` + `ordem: edhrec` para achar os staples e as melhores opções
+     por cor/arquétipo. **Não** use ferramentas de Commander aqui.
 3. **Orçamento:** filtre com `usd<=X` na consulta. Avise que preços são em USD
    (referência) e variam no Brasil.
 4. **Cheque a curva de mana** ao final: conte cartas por valor de mana e
@@ -108,7 +126,9 @@ Como usar bem:
 
 ## Formato de entrega da lista
 
-Sempre exportar em formato de texto padrão (importável em Moxfield, Archidekt, Liga Magic):
+Sempre exportar em formato de texto padrão (importável em Moxfield, Archidekt,
+Liga Magic). Exemplo abaixo é de Commander — adapte ao formato (60+sideboard,
+40 no Limitado, etc.):
 
 ```
 1 Krenko, Mob Boss
