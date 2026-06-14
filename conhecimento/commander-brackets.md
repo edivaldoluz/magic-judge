@@ -44,32 +44,12 @@ Para verificar se UMA carta específica é Game Changer, adicione o nome:
 Para sugerir cartas que NÃO sejam Game Changers (brackets 1–2):
 adicione `-is:gamechanger` à busca.
 
-### Snapshot da lista (53 cartas em 12/06/2026 — conferir na Scryfall antes de afirmar)
+A lista atual (ao vivo na Scryfall) é anexada automaticamente ao final da
+resposta de `info_brackets`, então **não há lista fixa neste arquivo** — assim
+nunca desatualiza. Para checar uma lista de cartas, use `verificar_game_changers`.
 
-**Criaturas:** Braids, Cabal Minion · Consecrated Sphinx · Drannith Magistrate ·
-Grand Arbiter Augustin IV · Notion Thief · Opposition Agent · Orcish Bowmasters ·
-Seedborn Muse · Tergrid, God of Fright · Thassa's Oracle
-
-**Planeswalker:** Narset, Parter of Veils
-
-**Instantâneas:** Ad Nauseam · Crop Rotation · Cyclonic Rift · Enlightened Tutor ·
-Fierce Guardianship · Force of Will · Gifts Ungiven · Intuition · Mystical Tutor ·
-Teferi's Protection · Vampiric Tutor · Worldly Tutor
-
-**Feitiços:** Biorhythm · Coalition Victory · Demonic Tutor · Farewell · Gamble ·
-Imperial Seal · Jeska's Will · Natural Order
-
-**Encantamentos:** Aura Shards · Humility · Necropotence · Rhystic Study ·
-Smothering Tithe · Survival of the Fittest · Underworld Breach
-
-**Artefatos:** Bolas's Citadel · Chrome Mox · Grim Monolith · Lion's Eye Diamond ·
-Mana Vault · Mox Diamond · Panoptic Mirror · The One Ring
-
-**Terrenos:** Ancient Tomb · Field of the Dead · Gaea's Cradle · Glacial Chasm ·
-Mishra's Workshop · Serra's Sanctum · The Tabernacle at Pendrell Vale
-
-Observação: **Sol Ring NÃO é Game Changer.** Esta lista é um snapshot — a
-fonte de verdade é sempre a busca `is:gamechanger` na Scryfall.
+Observação útil: **Sol Ring NÃO é Game Changer** (engano comum). Na dúvida sobre
+qualquer carta, confirme via `is:gamechanger` na Scryfall — nunca de memória.
 
 ## Como classificar um deck
 

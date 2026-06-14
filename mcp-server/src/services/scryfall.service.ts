@@ -144,14 +144,21 @@ export class ScryfallService {
     };
   }
 
-  /** Lista atual de Game Changers (cache de 24h). */
+  /** Lista atual de Game Changers, ao vivo da Scryfall (cache de 24h, paginada). */
   async gameChangers(): Promise<string[]> {
     const DIA = 24 * 60 * 60 * 1000;
     if (this.gameChangersCache && Date.now() - this.gameChangersCache.em < DIA) {
       return this.gameChangersCache.nomes;
     }
-    const r = await this.get(`${BASE}/cards/search?q=is%3Agamechanger&order=name`);
-    const nomes = (r.data ?? []).map((c: any) => c.name as string);
+    const nomes: string[] = [];
+    let url = `${BASE}/cards/search?q=is%3Agamechanger&order=name`;
+    // segue next_page até acabar (limite de segurança: 10 páginas = 1750 cartas)
+    for (let i = 0; i < 10; i++) {
+      const r = await this.get(url);
+      for (const c of r.data ?? []) nomes.push(c.name as string);
+      if (r.has_more && r.next_page) url = r.next_page as string;
+      else break;
+    }
     this.gameChangersCache = { nomes, em: Date.now() };
     this.logger.log(`Game Changers atualizados: ${nomes.length} cartas`);
     return nomes;

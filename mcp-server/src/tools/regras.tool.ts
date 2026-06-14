@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Tool } from '@rekog/mcp-nest';
 import { z } from 'zod';
 import { KnowledgeService } from '../services/knowledge.service';
+import { ScryfallService } from '../services/scryfall.service';
 
 @Injectable()
 export class RegrasTool {
-  constructor(private readonly knowledge: KnowledgeService) {}
+  constructor(
+    private readonly knowledge: KnowledgeService,
+    private readonly scryfall: ScryfallService,
+  ) {}
 
   @Tool({
     name: 'buscar_regra',
@@ -47,11 +51,26 @@ export class RegrasTool {
     description:
       'Retorna o guia completo do sistema de Brackets do Commander (níveis de poder 1 a 5): ' +
       'restrições de cada bracket (Game Changers, combos de 2 cartas, mass land denial, turnos extras), ' +
-      'como classificar um deck e a lista snapshot de Game Changers. ' +
+      'como classificar um deck e a lista de Game Changers OFICIAL AO VIVO (Scryfall). ' +
       'Use SEMPRE antes de montar ou avaliar um deck de Commander.',
     parameters: z.object({}),
   })
   async infoBrackets() {
-    return this.knowledge.brackets();
+    const base = this.knowledge.brackets();
+    try {
+      const gc = await this.scryfall.gameChangers();
+      return [
+        base,
+        '',
+        `## Game Changers — lista oficial ao vivo (Scryfall \`is:gamechanger\`): ${gc.length} cartas`,
+        ...gc.map((n) => `• ${n}`),
+      ].join('\n');
+    } catch {
+      return (
+        base +
+        '\n\n(Não foi possível buscar a lista viva de Game Changers agora — ' +
+        'use verificar_game_changers ou is:gamechanger na Scryfall.)'
+      );
+    }
   }
 }
