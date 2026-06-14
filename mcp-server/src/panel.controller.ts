@@ -92,7 +92,7 @@ function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
 function esc(s){return String(s).replace(/[&<>]/g,function(c){return c==='&'?'&amp;':c==='<'?'&lt;':'&gt;';});}
 async function load(){
   try{
-    var r=await fetch('stats',{headers:{'Accept':'application/json'}});
+    var r=await fetch(location.origin+'/stats',{headers:{'Accept':'application/json'}});
     if(!r.ok){document.body.innerHTML='<p style="color:#E8C75A">Erro ao carregar ('+r.status+')</p>';return;}
     var s=await r.json();
     set('k-calls',s.totalCalls);set('k-people',s.totalPeople);
