@@ -11,10 +11,12 @@ FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3333 \
-    CONHECIMENTO_DIR=/app/conhecimento
+    CONHECIMENTO_DIR=/app/conhecimento \
+    USAGE_LOG_DIR=/app/data
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY conhecimento/comprehensive-rules.txt conhecimento/commander-brackets.md ./conhecimento/
+RUN mkdir -p /app/data && chown node:node /app/data
 EXPOSE 3333
 USER node
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \

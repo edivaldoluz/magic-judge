@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { McpModule } from '@rekog/mcp-nest';
 import { KnowledgeService } from './services/knowledge.service';
 import { ScryfallService } from './services/scryfall.service';
@@ -6,6 +6,7 @@ import { EdhrecService } from './services/edhrec.service';
 import { RegrasTool } from './tools/regras.tool';
 import { CartasTool } from './tools/cartas.tool';
 import { DeckTool } from './tools/deck.tool';
+import { UsageLoggerMiddleware } from './usage-logger.middleware';
 
 @Module({
   imports: [
@@ -28,4 +29,8 @@ import { DeckTool } from './tools/deck.tool';
     DeckTool,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(UsageLoggerMiddleware).forRoutes('mcp');
+  }
+}
