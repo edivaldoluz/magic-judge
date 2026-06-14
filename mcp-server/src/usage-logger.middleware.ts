@@ -22,6 +22,13 @@ export class UsageLoggerMiddleware implements NestMiddleware {
   private readonly dir = process.env.USAGE_LOG_DIR || '';
   private salt = '';
 
+  /** Carimbo de tempo em America/Sao_Paulo, formato "YYYY-MM-DD HH:mm:ss". */
+  private nowSaoPaulo(): string {
+    return new Date().toLocaleString('sv-SE', {
+      timeZone: 'America/Sao_Paulo',
+    });
+  }
+
   private resolveSalt(): string {
     if (this.salt) return this.salt;
     if (!this.dir) return (this.salt = 'mj-default');
@@ -54,7 +61,7 @@ export class UsageLoggerMiddleware implements NestMiddleware {
           .update(this.resolveSalt() + ip)
           .digest('hex')
           .slice(0, 12);
-        const entry = { t: new Date().toISOString(), tool, cid };
+        const entry = { t: this.nowSaoPaulo(), tool, cid };
         this.logger.log(`[USAGE] ${JSON.stringify(entry)}`);
         if (this.dir) {
           try {

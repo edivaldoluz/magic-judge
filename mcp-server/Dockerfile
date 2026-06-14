@@ -9,8 +9,10 @@ RUN npm run build && npm prune --omit=dev
 
 FROM node:24-alpine
 WORKDIR /app
+RUN apk add --no-cache tzdata
 ENV NODE_ENV=production \
     PORT=3333 \
+    TZ=America/Sao_Paulo \
     CONHECIMENTO_DIR=/app/conhecimento \
     USAGE_LOG_DIR=/app/data
 COPY --from=build /app/node_modules ./node_modules
