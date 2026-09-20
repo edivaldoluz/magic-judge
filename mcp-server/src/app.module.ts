@@ -6,6 +6,7 @@ import { EdhrecService } from './services/edhrec.service';
 import { RegrasTool } from './tools/regras.tool';
 import { CartasTool } from './tools/cartas.tool';
 import { DeckTool } from './tools/deck.tool';
+import { InteracaoTool } from './tools/interacao.tool';
 import { UsageLoggerMiddleware } from './usage-logger.middleware';
 import { BasicAuthMiddleware } from './basic-auth.middleware';
 import { PanelController } from './panel.controller';
@@ -36,6 +37,7 @@ import { StatsService } from './stats.service';
     RegrasTool,
     CartasTool,
     DeckTool,
+    InteracaoTool,
     StatsService,
   ],
 })

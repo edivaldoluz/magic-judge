@@ -11,6 +11,8 @@ export class KnowledgeService implements OnModuleInit {
   private readonly logger = new Logger(KnowledgeService.name);
   private linhasRegras: string[] = [];
   private bracketsMd = '';
+  /** Índice das palavras-chave oficiais: "Ward" -> "702.21". */
+  private palavrasChave: { nome: string; regra: string }[] = [];
 
   onModuleInit() {
     const dir =
@@ -27,8 +29,18 @@ export class KnowledgeService implements OnModuleInit {
       .filter((l) => l.length > 0);
     this.bracketsMd = fs.readFileSync(bracketsPath, 'utf8');
 
+    // Índice de palavras-chave a partir dos títulos "702.N. Nome"
+    this.palavrasChave = [];
+    for (const l of this.linhasRegras) {
+      const m = l.match(/^(702\.\d+)\.\s+(.+)$/);
+      if (m && m[2].length >= 4) {
+        this.palavrasChave.push({ nome: m[2].trim(), regra: m[1] });
+      }
+    }
+
     this.logger.log(
-      `Base carregada: ${this.linhasRegras.length} linhas de regras (${regrasPath})`,
+      `Base carregada: ${this.linhasRegras.length} linhas de regras, ` +
+        `${this.palavrasChave.length} palavras-chave (${regrasPath})`,
     );
   }
 
@@ -111,6 +123,25 @@ export class KnowledgeService implements OnModuleInit {
 
     pontuados.sort((a, b) => b.score - a.score);
     return pontuados.slice(0, maxResultados).map((p) => p.linha);
+  }
+
+  /** Palavras-chave oficiais presentes num texto de carta (para a ferramenta interacao). */
+  detectarPalavrasChave(texto: string): { nome: string; regra: string }[] {
+    const t = this.normaliza(texto ?? '');
+    const achadas: { nome: string; regra: string }[] = [];
+    for (const kw of this.palavrasChave) {
+      const n = this.normaliza(kw.nome);
+      if (new RegExp(`\\b${this.escapaRegex(n)}\\b`).test(t)) {
+        achadas.push(kw);
+      }
+    }
+    return achadas;
+  }
+
+  /** Linhas de uma regra e suas sub-regras (ex: "702.19" → 702.19, 702.19a...). */
+  regrasDoNumero(numero: string, max = 8): string[] {
+    const re = new RegExp(`^${numero.replace(/\./g, '\\.')}(?![0-9])`);
+    return this.linhasRegras.filter((l) => re.test(l)).slice(0, max);
   }
 
   brackets(): string {

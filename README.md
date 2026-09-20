@@ -37,6 +37,7 @@ atropelar — o que acontece?"*, *"Monta um Commander do Krenko bracket 2"*...
 | `buscar_carta` | Carta por nome (EN ou PT-BR) — texto oficial, legalidade, preço |
 | `busca_avancada` | Busca avançada de cartas (cor, tipo, formato, preço...) |
 | `rulings_carta` | Rulings oficiais de uma carta |
+| `interacao` | Interação entre DUAS cartas: texto das duas, rulings dos dois lados e as regras das palavras-chave envolvidas |
 | `recomendacoes_comandante` | Sinergias e staples por comandante (com variante budget) |
 | `verificar_game_changers` | Confere uma lista contra a lista viva de Game Changers |
 

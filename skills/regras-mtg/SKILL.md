@@ -26,6 +26,7 @@ confirme o texto oficial com `buscar_carta` e consulte `rulings_carta`.
 | `buscar_regra` | Busca nas Comprehensive Rules. Aceita número (`702.19`) ou termo em inglês (`trample assign lethal`). |
 | `buscar_carta` | Texto oficial (oracle), tipo, legalidade e preço de uma carta. |
 | `rulings_carta` | Rulings oficiais (decisões de juiz) de uma carta. |
+| `interacao` | **Duas cartas de uma vez:** texto das duas, rulings dos DOIS lados e as regras das palavras-chave envolvidas. Use sempre que a dúvida for "o que acontece quando A encontra B". |
 
 ## Como buscar — da dúvida à regra
 
@@ -48,6 +49,10 @@ natural ("posso responder com contramágica depois que ele pagou o mana?").
    quase sempre está no detalhe de uma sub-regra.
 6. **Se a dúvida envolve carta específica**, chame `buscar_carta` para o texto
    exato e `rulings_carta` para os rulings — a interação pode depender disso.
+   **Se envolve DUAS cartas ("o que acontece quando A encontra B"), use
+   `interacao`**: ela já traz o texto das duas, os rulings dos dois lados e as
+   regras das palavras-chave — evita descobrir tarde que o ruling estava na
+   outra carta (ou em nenhuma das duas).
 
 ## Estrutura da Comprehensive Rules (para escolher o termo/numero de busca)
 

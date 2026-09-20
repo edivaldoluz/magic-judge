@@ -15,6 +15,7 @@ Em produção: **`https://mcp-magic.tcgagents.com/mcp`**
 | `buscar_carta` | Carta por nome (EN ou PT-BR) — texto oficial, legalidade, preço |
 | `busca_avancada` | Busca com a sintaxe da Scryfall (cor, tipo, formato, preço...) |
 | `rulings_carta` | Rulings oficiais de uma carta |
+| `interacao` | Interação entre duas cartas: oracle das duas, rulings dos dois lados e regras das palavras-chave detectadas |
 | `recomendacoes_comandante` | Sinergias e staples do EDHREC por comandante (com variante budget) |
 | `verificar_game_changers` | Confere uma lista contra a lista viva de Game Changers |
 
