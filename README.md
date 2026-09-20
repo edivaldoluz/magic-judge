@@ -71,7 +71,7 @@ Abra uma [issue](https://github.com/edivaldoluz/magic-judge/issues).
 
 ## Fontes
 
-- Comprehensive Rules © Wizards of the Coast — versão de 17/04/2026
+- Comprehensive Rules © Wizards of the Coast — versão de 25/09/2026
 - Manuais básicos oficiais em PT-BR (M14/M15) © Wizards of the Coast
 - Dados de cartas: [Scryfall](https://scryfall.com) (API gratuita)
 - Recomendações de decks: [EDHREC](https://edhrec.com)

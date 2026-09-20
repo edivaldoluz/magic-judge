@@ -29,11 +29,14 @@ export class CartasTool {
   @Tool({
     name: 'busca_avancada',
     description:
-      'Busca avançada de cartas na Scryfall com a sintaxe oficial. Filtros: c: cor, id: identidade de cor ' +
+      'Busca avançada de cartas na Scryfall com a sintaxe oficial. Retorna texto oracle, tipo, custo, ' +
+      'P/T, preço E LEGALIDADE por formato de cada carta. Filtros: c: cor, id: identidade de cor ' +
       '(Commander), t: tipo, o: texto, mv valor de mana, f: formato legal, usd preço, r: raridade, ' +
       '-is:gamechanger exclui Game Changers, pow/tou poder/resistência. ' +
       'Exemplos: "c:r t:instant mv<=2 f:pauper" | "id<=gw t:creature o:lifelink usd<=1". ' +
-      'Use para descobrir cartas para decks, respeitando formato, bracket e orçamento.',
+      'LOTE: para pegar o texto de VÁRIAS cartas específicas numa só chamada, use nomes exatos com OR — ' +
+      '`!"Lightning Bolt" or !"Counterspell" or !"Atog"` (é o jeito recomendado; evita dezenas de buscar_carta). ' +
+      'Atenção: buscar por nome exato ignora o filtro de formato — confira o campo "legalidades" de cada carta.',
     parameters: z.object({
       consulta: z.string().describe('Consulta na sintaxe Scryfall (em inglês)'),
       ordem: z
@@ -65,6 +68,7 @@ export class CartasTool {
         texto: c.texto_oracle,
         pt: c.poder_resistencia,
         usd: c.preco_usd,
+        legalidades: c.legalidades,
       }));
       return `${total} cartas no total. Primeiras ${resumo.length}:\n${JSON.stringify(resumo, null, 2)}`;
     } catch (e: any) {

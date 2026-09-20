@@ -40,26 +40,77 @@ export class KnowledgeService implements OnModuleInit {
     return linha ?? 'versão desconhecida';
   }
 
+  // Palavras muito comuns que só geram ruído no ranking (EN + PT).
+  private static readonly STOPWORDS = new Set([
+    'the', 'a', 'an', 'of', 'to', 'is', 'are', 'and', 'or', 'in', 'on', 'that',
+    'this', 'with', 'as', 'at', 'be', 'it', 'its', 'for', 'do', 'not', 'can',
+    'if', 'when', 'by', 'from', 'you', 'your', 'these', 'those', 'any', 'all',
+    'no', 'than', 'then', 'into', 'de', 'da', 'dos', 'das', 'que', 'se', 'na',
+    'os', 'as', 'um', 'uma', 'para', 'com',
+  ]);
+
+  private normaliza(s: string): string {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  }
+
+  private escapaRegex(s: string): string {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
   /**
    * Busca nas Comprehensive Rules.
-   * - Se o termo for um número de regra (ex: "702.19" ou "601"), retorna a
-   *   regra e todas as sub-regras.
-   * - Caso contrário, busca textual (case-insensitive) e retorna as linhas
-   *   que casam — cada linha já começa com o número da regra.
+   * - Número de regra (ex: "702.19", "601") → retorna a regra e sub-regras.
+   * - Texto (palavra-chave ou dúvida em palavras) → pontua cada linha por:
+   *   limite de palavra (evita "Ward" casar "toward"), quantos termos casaram
+   *   (AND preferido, degrada para OR) e boost se o termo bate no NOME da
+   *   palavra-chave (ex: "Ward" prioriza "702.21. Ward"). Ordena por relevância.
    */
   buscarRegra(termo: string, maxResultados = 12): string[] {
     const t = termo.trim();
 
     if (/^\d{3}(\.\d+)?[a-z]?\.?$/.test(t)) {
       const prefixo = t.replace(/\.$/, '');
-      const re = new RegExp(
-        `^${prefixo.replace(/\./g, '\\.')}(?![0-9])`,
-      );
+      const re = new RegExp(`^${prefixo.replace(/\./g, '\\.')}(?![0-9])`);
       return this.linhasRegras.filter((l) => re.test(l)).slice(0, maxResultados);
     }
 
-    const re = new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-    return this.linhasRegras.filter((l) => re.test(l)).slice(0, maxResultados);
+    const tokens = this.normaliza(t)
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w.length >= 3 && !KnowledgeService.STOPWORDS.has(w));
+
+    // termo curto / só stopwords → substring simples como rede de segurança
+    if (tokens.length === 0) {
+      const re = new RegExp(this.escapaRegex(this.normaliza(t)), 'i');
+      return this.linhasRegras
+        .filter((l) => re.test(this.normaliza(l)))
+        .slice(0, maxResultados);
+    }
+
+    const regexes = tokens.map(
+      (tk) => new RegExp(`\\b${this.escapaRegex(tk)}`, 'i'),
+    );
+    const pontuados: { linha: string; score: number }[] = [];
+
+    for (const linha of this.linhasRegras) {
+      const nl = this.normaliza(linha);
+      let casados = 0;
+      for (const re of regexes) if (re.test(nl)) casados++;
+      if (casados === 0) continue;
+
+      let boost = 0;
+      const m = linha.match(/^\d{3}\.\d+[a-z]?\.\s+(.+)$/);
+      if (m) {
+        const titulo = this.normaliza(m[1]);
+        for (const tk of tokens) {
+          if (new RegExp(`^${this.escapaRegex(tk)}\\b`).test(titulo)) boost += 60;
+        }
+      }
+      const bonusAnd = casados === tokens.length ? 25 : 0;
+      pontuados.push({ linha, score: casados * 10 + boost + bonusAnd });
+    }
+
+    pontuados.sort((a, b) => b.score - a.score);
+    return pontuados.slice(0, maxResultados).map((p) => p.linha);
   }
 
   brackets(): string {
