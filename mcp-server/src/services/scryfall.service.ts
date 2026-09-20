@@ -38,6 +38,17 @@ export class ScryfallService {
     return res.json();
   }
 
+  /** Como `get`, mas devolve null em 404 (a Scryfall usa 404 para "busca sem resultados"). */
+  private async getOpcional(url: string): Promise<any | null> {
+    const res = await fetch(url, { headers: HEADERS });
+    if (res.status === 404) return null;
+    if (!res.ok) {
+      const corpo = await res.text().catch(() => '');
+      throw new Error(`Scryfall ${res.status}: ${corpo.slice(0, 300)}`);
+    }
+    return res.json();
+  }
+
   private resumir(c: any): CartaResumo {
     return {
       nome: c.name,
@@ -120,28 +131,38 @@ export class ScryfallService {
 
   /** Busca avançada com a sintaxe da Scryfall (c:, t:, o:, mv, f:, usd...). */
   async busca(q: string, ordem = 'edhrec', max = 15): Promise<CartaResumo[]> {
-    const r = await this.get(
+    const r = await this.getOpcional(
       `${BASE}/cards/search?q=${encodeURIComponent(q)}&order=${encodeURIComponent(ordem)}`,
     );
-    return (r.data ?? []).slice(0, max).map((c: any) => this.resumir(c));
+    return (r?.data ?? []).slice(0, max).map((c: any) => this.resumir(c));
   }
 
   async totalDaBusca(q: string): Promise<number> {
-    const r = await this.get(`${BASE}/cards/search?q=${encodeURIComponent(q)}`);
-    return r.total_cards ?? 0;
+    const r = await this.getOpcional(
+      `${BASE}/cards/search?q=${encodeURIComponent(q)}`,
+    );
+    return r?.total_cards ?? 0;
   }
 
-  /** Rulings oficiais de uma carta (resolve o nome primeiro). */
-  async rulings(nome: string): Promise<{ carta: string; rulings: { data: string; texto: string }[] }> {
-    const carta = await this.porNome(nome);
-    const r = await this.get(`${BASE}/cards/${carta.id}/rulings`);
+  /** Rulings de uma carta já resolvida (evita buscar o nome de novo). */
+  async rulingsPorId(
+    id: string,
+    nome: string,
+  ): Promise<{ carta: string; rulings: { data: string; texto: string }[] }> {
+    const r = await this.get(`${BASE}/cards/${id}/rulings`);
     return {
-      carta: carta.nome,
+      carta: nome,
       rulings: (r.data ?? []).map((x: any) => ({
         data: x.published_at,
         texto: x.comment,
       })),
     };
+  }
+
+  /** Rulings oficiais de uma carta (resolve o nome primeiro). */
+  async rulings(nome: string): Promise<{ carta: string; rulings: { data: string; texto: string }[] }> {
+    const carta = await this.porNome(nome);
+    return this.rulingsPorId(carta.id, carta.nome);
   }
 
   /** Lista atual de Game Changers, ao vivo da Scryfall (cache de 24h, paginada). */

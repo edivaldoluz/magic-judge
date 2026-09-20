@@ -36,9 +36,14 @@ export class InteracaoTool {
         this.scryfall.porNome(carta_b),
       ]);
 
+      // usa o id já resolvido — evita buscar cada carta duas vezes na Scryfall
       const [rulingsA, rulingsB] = await Promise.all([
-        this.scryfall.rulings(a.nome).catch(() => ({ carta: a.nome, rulings: [] })),
-        this.scryfall.rulings(b.nome).catch(() => ({ carta: b.nome, rulings: [] })),
+        this.scryfall
+          .rulingsPorId(a.id, a.nome)
+          .catch(() => ({ carta: a.nome, rulings: [] as { data: string; texto: string }[] })),
+        this.scryfall
+          .rulingsPorId(b.id, b.nome)
+          .catch(() => ({ carta: b.nome, rulings: [] as { data: string; texto: string }[] })),
       ]);
 
       const bloco = (

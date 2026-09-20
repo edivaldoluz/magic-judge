@@ -33,8 +33,14 @@ export class RegrasTool {
     const resultados = this.knowledge.buscarRegra(termo, max_resultados ?? 12);
     if (resultados.length === 0) {
       return (
-        `Nenhuma regra encontrada para "${termo}". Tente sinônimos em inglês, ` +
-        'o nome exato da palavra-chave (ex: "Deathtouch") ou o glossário (busque o termo isolado).'
+        `Nenhuma regra encontrada para "${termo}". As Comprehensive Rules são em INGLÊS — ` +
+        'se você buscou em português, traduza o conceito e tente de novo. Equivalências comuns: ' +
+        'atropelar=trample, toque mortífero=deathtouch, voar=flying, vigilância=vigilance, ' +
+        'ímpeto=haste, iniciativa=first strike, golpe duplo=double strike, vínculo com a vida=lifelink, ' +
+        'indestrutível=indestructible, anular=counter, pilha=stack, prioridade=priority, ' +
+        'camadas=layers, ficha=token, cemitério=graveyard, exilar=exile, ' +
+        'ações baseadas em estado=state-based actions. ' +
+        'Você também pode buscar pelo número da regra (ex: "702.19") ou pelo nome da palavra-chave.'
       );
     }
     return [

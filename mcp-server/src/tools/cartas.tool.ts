@@ -61,6 +61,14 @@ export class CartasTool {
         this.scryfall.busca(consulta, ordem ?? 'edhrec', max_resultados ?? 15),
         this.scryfall.totalDaBusca(consulta),
       ]);
+      if (total === 0 || cartas.length === 0) {
+        return (
+          `Nenhuma carta encontrada para: ${consulta}\n` +
+          'A consulta é válida mas não casou com nada. Revise a sintaxe ou afrouxe os filtros — ' +
+          'ex: c:r (cor), t:creature (tipo), o:"texto", mv<=3, f:pauper (formato), usd<=1 (preço). ' +
+          'Para nome exato use !"Nome da Carta".'
+        );
+      }
       const resumo = cartas.map((c) => ({
         nome: c.nome,
         custo: c.custo_de_mana,

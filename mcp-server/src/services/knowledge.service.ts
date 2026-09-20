@@ -22,11 +22,14 @@ export class KnowledgeService implements OnModuleInit {
     const regrasPath = path.join(dir, 'comprehensive-rules.txt');
     const bracketsPath = path.join(dir, 'commander-brackets.md');
 
+    // O arquivo oficial repete os títulos das seções no sumário — sem dedupe,
+    // resultados como "601. Casting Spells" aparecem duas vezes e gastam slots.
+    const vistas = new Set<string>();
     this.linhasRegras = fs
       .readFileSync(regrasPath, 'utf8')
       .split(/\r?\n/)
       .map((l) => l.trim())
-      .filter((l) => l.length > 0);
+      .filter((l) => l.length > 0 && !vistas.has(l) && vistas.add(l) !== undefined);
     this.bracketsMd = fs.readFileSync(bracketsPath, 'utf8');
 
     // Índice de palavras-chave a partir dos títulos "702.N. Nome"
