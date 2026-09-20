@@ -26,8 +26,11 @@ erratas. Sempre confirme com `buscar_carta` antes de descrever uma carta.
 | `rulings_carta` | Rulings oficiais de uma carta | `nome` |
 
 - Nome em **português** funciona direto em `buscar_carta` e `rulings_carta`
-  (ex: "Relâmpago"). Na resposta, use o nome oficial em inglês na primeira
-  menção, com o nome em PT entre parênteses quando souber.
+  (ex: "Raio" = Lightning Bolt). Na resposta, use o nome oficial em inglês na
+  primeira menção, com o nome em PT entre parênteses quando souber.
+- ⚠️ **Nomes em PT enganam:** "Relâmpago" é **Thunderbolt**, não Lightning Bolt
+  (esse é "Raio"). Sempre confira o campo `nome_impresso` da resposta para ter
+  certeza de que veio a carta certa antes de afirmar qualquer coisa.
 - `busca_avancada` espera a **consulta em inglês** na sintaxe Scryfall (abaixo).
   Por padrão ordena por `edhrec` (popularidade).
 

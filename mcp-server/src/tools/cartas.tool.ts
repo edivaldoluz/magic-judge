@@ -14,7 +14,7 @@ export class CartasTool {
       'Retorna o texto oficial (oracle), custo, tipo, legalidade por formato e preço em USD. ' +
       'SEMPRE use esta ferramenta antes de afirmar o que uma carta faz — o texto oficial muda com erratas.',
     parameters: z.object({
-      nome: z.string().describe('Nome da carta, em inglês ou português (ex: "Lightning Bolt" ou "Relâmpago")'),
+      nome: z.string().describe('Nome da carta, em inglês ou português (ex: "Lightning Bolt" ou "Raio"). Atenção: o nome em PT pode ser de outra carta — "Relâmpago" é Thunderbolt, não Lightning Bolt; confira o campo nome_impresso na resposta.'),
     }),
   })
   async buscarCarta({ nome }: { nome: string }) {
